@@ -23,7 +23,11 @@ curl -sS "$HEIMDALL_API_BASE/projects" -H "Authorization: Bearer $HEIMDALL_API_T
 ```
 
 - 缺 `HEIMDALL_API_BASE` / `HEIMDALL_API_TOKEN` → 停下来向用户要，不要猜。
-- 用户没指明项目时，列出项目让用户选，或按选题标题匹配。
+- **素材必须写入某个项目**（`POST .../projects/{project_id}/materials`）。解析目标项目：
+  - 用户指明项目（id / 第 N 期 / 标题）→ 按指明匹配；
+  - 用户只给选题 → 按选题标题匹配项目 `title`；无匹配则列出近期项目让用户选；
+  - **收集任务且用户未指明**（heimdall-collect 激活时）→ 取 `GET /projects` 列表第一项（`episode_no` 降序，即最新一期）；选题用该项目 `title`。
+  - 零散单条入库、上下文仍无法确定 → 列出近期项目让用户选。
 
 ## 1. 素材 API 速查
 
