@@ -9,12 +9,14 @@ SKILLS=(heimdall-collect heimdall-material heimdall-doctor)
 CLAUDE_DIR="$HOME/.claude/skills"
 CURSOR_DIR="$HOME/.cursor/skills-cursor"
 OPENCLAW_DIR="$HOME/.openclaw/skills"
+HERMES_DIR="$HOME/.hermes/skills/heimdall"
 
 declare -a TARGETS=()
 
 detect_claude() { command -v claude &>/dev/null || [[ -d "$HOME/.claude" ]]; }
 detect_cursor() { [[ -d "$HOME/.cursor" ]]; }
 detect_openclaw() { command -v openclaw &>/dev/null || [[ -d "$HOME/.openclaw" ]]; }
+detect_hermes() { command -v hermes &>/dev/null || [[ -d "$HOME/.hermes" ]]; }
 
 use_local_source() {
   [[ -f "$SCRIPT_DIR/heimdall-collect/SKILL.md" ]]
@@ -40,6 +42,12 @@ auto_detect_targets() {
     TARGETS+=("$OPENCLAW_DIR")
   else
     echo "  [跳过] OpenClaw（未检测到 openclaw 命令或 ~/.openclaw）"
+  fi
+  if detect_hermes; then
+    echo "  [已检测到] Hermes → $HERMES_DIR"
+    TARGETS+=("$HERMES_DIR")
+  else
+    echo "  [跳过] Hermes（未检测到 hermes 命令或 ~/.hermes）"
   fi
   echo ""
 }
@@ -77,7 +85,7 @@ fi
 
 if [[ ${#TARGETS[@]} -eq 0 ]]; then
   echo "未检测到可安装的 Harness 环境。"
-  echo "请确认已安装 Claude Code / Cursor / OpenClaw 之一，或手动指定："
+  echo "请确认已安装 Claude Code / Cursor / OpenClaw / Hermes 之一，或手动指定："
   echo '  SKILLS_DIRS="$HOME/.claude/skills" bash install-skills.sh'
   exit 1
 fi

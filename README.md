@@ -15,7 +15,7 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 - [`skills/heimdall-material-skill.md`](./skills/heimdall-material-skill.md) — 素材接入与入库质量规则（API Token + 素材/Agent 接口）
 - [`skills/heimdall-collect-skill.md`](./skills/heimdall-collect-skill.md) — 收集任务编排（调研简报 → 分轮执行 → 缺口盘点，可续跑）
 - [`skills/heimdall-doctor-skill.md`](./skills/heimdall-doctor-skill.md) — 平台自检（连通 / Token / 素材 API 冒烟）
-- [`skills/claude-code/`](./skills/claude-code/) — **Harness 技能包**（`setup-heimdall.sh` 一键初始化：装技能 + 配 Token）
+- [`skills/claude-code/`](./skills/claude-code/) — **Harness 技能包**（支持 Claude Code、Cursor、OpenClaw、Hermes；`setup-heimdall.sh` 一键初始化：装技能 + 配 Token）
 - [`skills/examples/research-plan-example.md`](./skills/examples/research-plan-example.md) — 调研计划模板范本
 
 ### 设计规格
