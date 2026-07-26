@@ -23,4 +23,5 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 - [`superpowers/specs/2026-07-04-creation-workflow-design.md`](./superpowers/specs/2026-07-04-creation-workflow-design.md) — 创作功能设计（素材 · Agent · AI 创作）
 - [`superpowers/specs/2026-07-04-llm-config-design.md`](./superpowers/specs/2026-07-04-llm-config-design.md) — LLM 配置设计
 - [`superpowers/specs/2026-07-06-collect-task-design.md`](./superpowers/specs/2026-07-06-collect-task-design.md) — 素材收集任务设计（heimdall-collect 技能）
+- [`superpowers/specs/2026-07-26-multimodal-material-ingestion-design.md`](./superpowers/specs/2026-07-26-multimodal-material-ingestion-design.md) — 多模态素材理解与 PDF 自动解析演进设计
 - [`superpowers/specs/2026-07-05-material-research-design.md`](./superpowers/specs/2026-07-05-material-research-design.md) — 调研素材收集设计（已废弃，历史记录）

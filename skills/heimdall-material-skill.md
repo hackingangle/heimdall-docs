@@ -88,6 +88,8 @@ curl -sS -X PUT "$HEIMDALL_API_BASE/materials/42/file" \
 - 幂等替换：重复 PUT 覆盖旧文件。
 - 大小上限默认 **100 MB**（`HEIMDALL_STORAGE_MAX_FILE_MB` 可调），超限返回 `413`。视频文件本身**不要上传**，只传字幕；音轨转写场景的音频原件（`.m4a` 等）允许上传留档。
 - 响应为素材完整 JSON，`file_key / file_name / file_size / file_mime` 已回填。
+- 仅有 PDF 原件时，可先用 `{"title":"…","content":"","type":"pdf"}` 创建素材，再上传原件。平台会自动抽取电子 PDF 文本并回填 `raw_content/content`；通过详情接口轮询 `extraction_status`（`pending / processing / ready / failed`）。
+- `extraction_status=failed` 且错误提示需要 OCR 时，说明是扫描件或复杂版面；当前需由外部工具完成 OCR 后 PATCH `content`，后续版本将自动接入 OCR Provider。
 - 下载原件：`GET $HEIMDALL_API_BASE/materials/42/file`（无原件时 `404`）。
 
 ### 2.3 查询素材

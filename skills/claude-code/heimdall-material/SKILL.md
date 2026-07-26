@@ -49,7 +49,7 @@ curl -sS -X POST "$HEIMDALL_API_BASE/projects/{项目id}/materials" \
 
 字段规则：
 
-- `title` 必填（≤512 字符）；`content` 必填，放清洗后全文（上限约 16MB，不要过度摘要）。
+- `title` 必填（≤512 字符）；文本素材的 `content` 必须放清洗后全文（上限约 16MB，不要过度摘要）。仅有 PDF 原件时允许 `content=""`。
 - `type` 取值：`text`（文本/Markdown，默认）/ `pdf`（PDF 原件为主）。题材语义用标题前缀：`[网页文章]`、`[视频字幕]`、`[书籍]`。
 - **`origin_url` 和 `raw_content` 尽量填**（留档防丢失）：有来源地址就填 `origin_url`；`raw_content` 放清洗前的文本底稿（抓取直出的原文、原始字幕等），入库后不可修改。用户手写的笔记类素材可不填。
 - 成功返回 201 和素材 JSON（记下 `id`）。
@@ -63,6 +63,7 @@ curl -sS -X PUT "$HEIMDALL_API_BASE/materials/{素材id}/file" \
 ```
 
 - 有二进制原件（PDF、原始字幕文件、转写用的音频等）就传，字节存对象存储；**视频文件永远不传**（音频允许）。
+- PDF 的 `content` 为空时，上传后平台自动抽取电子 PDF 文本；轮询详情中的 `extraction_status`，只有 `ready` 后才能用于创作。`failed` 且提示需要 OCR 时，由当前 Harness 完成 OCR 后 PATCH `content`。
 - 上限 100MB，超限返回 413，记录后留给人工。
 - 下载：`GET $HEIMDALL_API_BASE/materials/{id}/file`。
 
