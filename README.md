@@ -6,7 +6,11 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 
 ## 目录
 
-- [`prds/Heimdall PRD.md`](./prds/Heimdall%20PRD.md) — 产品需求文档
+- [`prds/Heimdall PRD 1.0.md`](./prds/Heimdall%20PRD%201.0.md) — **现行产品需求（按已实现功能；含主路径 / 素材 / 创作 / 跟读图）**
+- [`Heimdall-PRD-1.0.html`](./Heimdall-PRD-1.0.html) — 同上 HTML，给投资人投屏
+- [`Heimdall-技术实现交接.md`](./Heimdall-技术实现交接.md) — **技术交接 Markdown（仓库图、运行时接线、鉴权、发布流水线）**
+- [`Heimdall-技术实现交接.html`](./Heimdall-技术实现交接.html) — 同上 HTML
+- [`prds/Heimdall PRD.md`](./prds/Heimdall%20PRD.md) — 立项愿景稿 v0.3（任务表编排，仅历史）
 
 ### Harness 技能（供外部 Agent 装载）
 

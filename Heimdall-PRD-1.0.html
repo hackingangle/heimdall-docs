@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Heimdall 1.0 产品需求文档</title>
+  <style>
+    :root {
+      --bg: #0e0f12;
+      --surface: #16181d;
+      --elev: #1c1f26;
+      --line: rgba(236, 231, 223, 0.1);
+      --text: #ece7df;
+      --muted: #9a958c;
+      --gold: #d4a574;
+      --gold-2: #e8c49a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font: 16px/1.7 "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Songti SC", sans-serif;
+    }
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .page { max-width: 920px; margin: 0 auto; padding: 48px 28px 88px; }
+    .cover {
+      padding: 36px 0 28px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 36px;
+    }
+    .kicker {
+      color: var(--gold);
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    h1 { font-size: 36px; line-height: 1.2; margin: 10px 0 8px; font-weight: 650; }
+    .tagline { font-size: 20px; color: var(--gold-2); margin: 0 0 16px; }
+    .deck { color: var(--muted); font-size: 16px; max-width: 38em; }
+    .meta-row {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      background: var(--elev);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    nav {
+      display: flex; flex-wrap: wrap; gap: 8px 18px;
+      margin: 22px 0 0; font-size: 13px;
+    }
+    nav a { color: var(--muted); }
+    nav a:hover { color: var(--gold); }
+    h2 {
+      font-size: 22px;
+      margin: 48px 0 12px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+    h3 { font-size: 17px; margin: 26px 0 8px; }
+    p { margin: 0 0 12px; }
+    ul, ol { margin: 0 0 14px; padding-left: 1.2em; }
+    li { margin: 5px 0; }
+    .quote {
+      margin: 18px 0;
+      padding: 16px 18px;
+      background: var(--elev);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 10px 10px 0;
+      color: var(--gold-2);
+      font-size: 17px;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 16px 14px;
+    }
+    .card h3 { margin: 0 0 6px; }
+    .card p { color: var(--muted); font-size: 14px; margin: 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: #12141a; color: var(--muted); font-size: 12px; font-weight: 600; }
+    tr:last-child td { border-bottom: none; }
+    .steps {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+    .steps li {
+      position: relative;
+      padding: 12px 14px 12px 52px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      margin: 0 0 8px;
+    }
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 14px; top: 14px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: #2a2218;
+      color: var(--gold);
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .no { color: var(--muted); }
+    footer {
+      margin-top: 56px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media print {
+      body { background: #fff; color: #222; }
+      .card, table, .quote, .steps li { background: #fff; color: #222; border-color: #ddd; }
+      .tagline, .quote, a, .kicker { color: #8a6230; }
+      h2 { border-color: #ddd; }
+      .chip { color: #555; }
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header class="cover">
+      <div class="kicker">PRODUCT REQUIREMENTS · 1.0</div>
+      <h1>Heimdall</h1>
+      <p class="tagline">从选题到成片的一站式创作台</p>
+      <p class="deck">
+        给投资人的产品说明。写的是已经做出来、可以当场演示的 1.0，
+        不是「将来要做自动编排」的愿景稿。
+      </p>
+      <div class="meta-row">
+        <span class="chip">版本 1.0</span>
+        <span class="chip">2026-08-19</span>
+        <span class="chip">已上线 www.agoodbit.com</span>
+        <span class="chip">Web · iOS · 外部 Agent</span>
+      </div>
+      <nav>
+        <a href="#what">产品定义</a>
+        <a href="#why">问题</a>
+        <a href="#who">用户</a>
+        <a href="#loop">主路径</a>
+        <a href="#features">功能</a>
+        <a href="#out">不做</a>
+        <a href="#demo">验收 / 讲解顺序</a>
+      </nav>
+    </header>
+
+    <h2 id="what">1. 一句话</h2>
+    <div class="quote">
+      Heimdall 不是又一个聊天窗口。<br />
+      它是创作者和多个 AI 共用的那张工作台：一期节目的资料、稿和录，都落在同一个地方。
+    </div>
+    <p>
+      名字取自北欧神话里彩虹桥的守望者。一边是做口播的人，一边是 Claude Code、Cursor、OpenClaw、Hermes 这些工具。
+      1.0 先把一座桥修通：<b>人和多个 AI 读写同一期节目的同一份素材。</b>
+    </p>
+
+    <h2 id="why">2. 为什么现在做</h2>
+    <p>口播创作者已经在用 AI，但工作流是碎的：</p>
+    <table>
+      <thead>
+        <tr><th>环节</th><th>今天</th><th>代价</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>调研</td><td>搜索、爬虫、网盘 PDF、各家对话各写各的</td><td>下一期找不到，也无法引用</td></tr>
+        <tr><td>写稿</td><td>再开一个对话，把资料粘进去</td><td>上下文靠复制，人设每次重写</td></tr>
+        <tr><td>改稿</td><td>备忘录 / Word</td><td>不知道这稿用过哪些料</td></tr>
+        <tr><td>录制</td><td>再抄进提词 App</td><td>稿和镜头是两套工具</td></tr>
+        <tr><td>换模型</td><td>换工具就换一套记忆</td><td>AI 之间没有共享状态</td></tr>
+      </tbody>
+    </table>
+    <p>
+      1.0 不承诺「按一个按钮自动出片」。它先把更值钱的事情做对：
+      <b>状态</b>——一期节目只有一个项目，一份内容只存一次。
+    </p>
+
+    <h2 id="who">3. 给谁用</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>主用户 · 口播创作者</h3>
+        <p>做知识、人物、讲史、讲经等中文长口播的个人或小团队。已经在用 AI 写稿，缺一个能把「资料 → 稿 → 录」收拢的地方。</p>
+      </div>
+      <div class="card">
+        <h3>次用户 · 外部 Agent</h3>
+        <p>Claude Code、Cursor、OpenClaw、Hermes。凭一把 Token 把调研写进同一期，或把写稿人设读出去执行。</p>
+      </div>
+    </div>
+
+    <h2 id="loop">4. 1.0 已经跑通的主路径</h2>
+    <p>验证场景：YouTube / 短视频口播。例如做一期「虚云老和尚」。</p>
+    <ol class="steps">
+      <li>建第 N 期项目（期数、标题、栏目）。</li>
+      <li>资料进库：自己贴笔记；或让外部 Agent 按技能调研写入；书籍 PDF 上传后自动抽正文。</li>
+      <li>保存一个写稿 Agent（人设 + 自己的模型密钥，或平台默认模型）。</li>
+      <li>勾选年谱、开示录等素材，生成口播稿。<b>稿本身还是一条素材</b>，可以再改、再生成标题文案。</li>
+      <li>网页「录制模式」定速提词；或用 iPhone 跟读——说到哪，稿滚到哪。</li>
+      <li>导出 Markdown / 纯文本 / PDF，发到各平台。</li>
+    </ol>
+
+    <h2>5. 产品原则（已写进实现，不是墙上海报）</h2>
+    <ul>
+      <li><b>创作结果即素材。</b>手动、外部 AI、平台生成，三种来源一张表。没有另立「产物」「任务看板」。</li>
+      <li><b>机制与策略分离。</b>平台负责存、鉴权、调用模型、管文件；怎么调研、怎么拆大纲，由技能或用户的 Agent 决定。</li>
+      <li><b>人和 AI 走同一扇门。</b>网页登录，工具用 Token，打的是同一套项目 / 素材 / Agent 接口。</li>
+      <li><b>先做一期节目。</b>1.0 不内置自动调度引擎。人点，或外部 Agent 按技能执行。</li>
+    </ul>
+
+    <h2 id="features">6. 功能清单（均可演示）</h2>
+
+    <h3>工作台</h3>
+    <table>
+      <thead><tr><th>模块</th><th>1.0 做什么</th></tr></thead>
+      <tbody>
+        <tr><td>账号</td><td>注册登录、邀请暗号、资料与头像；数据按用户隔离</td></tr>
+        <tr><td>项目</td><td>按「第几期」管理节目，期数自动递增</td></tr>
+        <tr><td>素材库</td><td>Markdown 编辑预览；按手动 / API / AI 筛选；来源链接与原文留档</td></tr>
+        <tr><td>PDF</td><td>原件存对象存储；可检索 PDF 自动抽正文；扫描件明确标解析失败</td></tr>
+        <tr><td>智能体</td><td>人设、用途、提示词；绑定用户自己的 OpenAI 兼容模型</td></tr>
+        <tr><td>平台创作</td><td>选 Agent + 勾选素材 + 补充指令 → 后台生成 → 新素材可再被引用</td></tr>
+        <tr><td>溯源</td><td>AI 稿记录用了哪个 Agent、哪些输入、失败原因</td></tr>
+      </tbody>
+    </table>
+
+    <h3>彩虹桥：外部 AI</h3>
+    <table>
+      <thead><tr><th>模块</th><th>1.0 做什么</th></tr></thead>
+      <tbody>
+        <tr><td>API Token</td><td>网页签发，只亮一次明文，可吊销</td></tr>
+        <tr><td>技能引导</td><td>给 Claude Code / Cursor / OpenClaw / Hermes 的一键安装</td></tr>
+        <tr><td>doctor</td><td>检查连通和令牌</td></tr>
+        <tr><td>collect</td><td>分轮调研、可续跑，不假设用哪种搜索或爬虫</td></tr>
+        <tr><td>material</td><td>入库规范：留原文、留出处、不过度摘要</td></tr>
+      </tbody>
+    </table>
+
+    <h3>到镜头前</h3>
+    <table>
+      <thead><tr><th></th><th>网页</th><th>iPhone / iPad / Mac</th></tr></thead>
+      <tbody>
+        <tr><td>导出</td><td>复制、.md、.txt、PDF</td><td>对齐工作台阅读与导出</td></tr>
+        <tr><td>定速提词</td><td>全屏大字、匀速滚、点段落重来</td><td>—</td></tr>
+        <tr><td>跟读提词</td><td>—</td><td>边说边翻篇，口令回上一句</td></tr>
+      </tbody>
+    </table>
+    <p>跟读只把声音变成字，用来对齐稿件，不读取用户的项目内容。</p>
+
+    <h2 id="out">7. 1.0 明确不做</h2>
+    <p class="no">避免讲成「全能自动出片」。</p>
+    <ul class="no">
+      <li>不从「一个选题」无人值守跑完调研到发布</li>
+      <li>不做平台内置的多 Agent 调度市场、任务 DAG</li>
+      <li>不做剪辑时间线、自动烧字幕、广告分发</li>
+      <li>不做扫描件 OCR、音视频精编</li>
+      <li>不做团队空间（1.0 是单人工作台）</li>
+      <li>网页不做跟读（跟读只在客户端）</li>
+    </ul>
+
+    <h2 id="demo">8. 给投资人的讲解顺序（也是验收标准）</h2>
+    <p>现场 8–10 分钟可以走完。闭环成立，即 1.0 产品成立。</p>
+    <ol class="steps">
+      <li>打开 <a href="https://www.agoodbit.com">www.agoodbit.com</a>，进入一期节目。</li>
+      <li>素材库：一条手写笔记 + 一份已抽出正文的 PDF。</li>
+      <li>智能体：展示一条写稿人设（提示词可见）。</li>
+      <li>勾选资料，生成一段口播稿；指出「稿还在素材库里，不是聊天气泡」。</li>
+      <li>网页打开录制模式，滚两段。</li>
+      <li>手机打开同一期，跟读几句，稿跟着走。</li>
+      <li>打开技能引导 / Token：说明 Claude 或 Cursor 可以把下一轮调研直接写回来。</li>
+    </ol>
+
+    <h2>9. 1.0 验证什么</h2>
+    <p>
+      在谈定价之前，先验证一件事：创作者是否愿意把<b>一期节目的全部中间物</b>放在 Heimdall，
+      而不是继续散落在聊天记录和网盘里。
+    </p>
+    <p>
+      下一阶段——更稳的跟读、更深的素材理解、轻量团队、按用量收费——只在这条工作流被用起来之后展开，不计入 1.0 验收。
+    </p>
+
+    <footer>
+      对应正文：<code>docs/prds/Heimdall PRD 1.0.md</code>。早期「任务表驱动」立项稿已降为历史文档，勿与 1.0 混讲。
+    </footer>
+  </article>
+</body>
+</html>

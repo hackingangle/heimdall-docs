@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Heimdall 项目交接手册</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --bg-elev: #171d24;
+      --bg-card: #1c232c;
+      --line: #2a3440;
+      --text: #e8eef4;
+      --muted: #93a0ae;
+      --dim: #6d7a88;
+      --amber: #e8b86d;
+      --amber-dim: #c4923f;
+      --teal: #6ec8c0;
+      --rose: #e08b8b;
+      --ok: #7dbe8a;
+      --warn: #d4a84b;
+      --priv: #c4923f;
+      --pub: #6ec8c0;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font: 16px/1.65 "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+    a { color: var(--amber); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code, kbd {
+      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 0.88em;
+      background: #0b0f14;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0.08em 0.4em;
+    }
+    pre {
+      background: #0b0f14;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font: 13px/1.55 "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      color: #d5dde6;
+    }
+    pre code { background: none; border: none; padding: 0; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
+    header.hero {
+      padding: 48px 0 28px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    h1 { font-size: 34px; line-height: 1.25; margin: 8px 0 12px; font-weight: 650; }
+    h2 {
+      font-size: 22px;
+      margin: 48px 0 14px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+    }
+    h3 { font-size: 17px; margin: 28px 0 10px; color: #f3f7fb; }
+    p.lead { color: var(--muted); font-size: 17px; max-width: 720px; }
+    nav.toc {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin: 20px 0 0;
+      font-size: 13px;
+    }
+    nav.toc a { color: var(--muted); }
+    nav.toc a:hover { color: var(--amber); }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin: 24px 0 8px;
+    }
+    .stat {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .stat b { display: block; font-size: 22px; color: var(--amber); }
+    .stat span { color: var(--muted); font-size: 13px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+    th { background: #151b22; color: var(--muted); font-weight: 600; font-size: 12px; letter-spacing: 0.04em; }
+    tr:last-child td { border-bottom: none; }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .badge.priv { color: var(--amber); border-color: #5a4524; background: #2a2112; }
+    .badge.pub { color: var(--teal); border-color: #2a5551; background: #142422; }
+    .badge.local { color: var(--rose); border-color: #5a3535; background: #2a1818; }
+    .badge.ok { color: var(--ok); border-color: #2f4d36; background: #142018; }
+    .badge.warn { color: var(--warn); border-color: #5a4524; background: #2a2112; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .card h3 { margin-top: 0; }
+    .card p { color: var(--muted); margin: 0 0 10px; }
+    .card ul { margin: 0; padding-left: 18px; color: var(--text); }
+    .card li { margin: 4px 0; }
+    .flow {
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-family: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      color: #c9d3dc;
+    }
+    .callout {
+      border-left: 3px solid var(--amber);
+      background: #241c10;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      color: #f0e2c4;
+      margin: 16px 0;
+    }
+    .callout.warn { border-color: var(--rose); background: #2a1818; color: #f0d4d4; }
+    .callout.ok { border-color: var(--teal); background: #142422; color: #d4eeeb; }
+    ul.compact li { margin: 6px 0; }
+    footer {
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      color: var(--dim);
+      font-size: 13px;
+    }
+    @media print {
+      body { background: #fff; color: #111; }
+      .card, table, .stat, .flow, pre { background: #fff; color: #111; border-color: #ccc; }
+      a { color: #111; text-decoration: underline; }
+      header.hero { border-color: #ccc; }
+      h2 { border-color: #ccc; }
+      .callout { background: #f7f1e4; color: #333; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">Heimdall · Handover</div>
+      <h1>Heimdall 项目交接手册</h1>
+      <p class="lead">
+        给接手维护的人：这不是脚手架说明，而是当前真实落地的产品、仓库、板块和发布纪律。
+        工作区 <code>/Users/ong/ws/heimdall</code> 本身<b>不是</b>一个 git 仓库，里面装的是 5 个相互独立的 GitHub 仓库。
+      </p>
+      <div class="meta">
+        <div class="stat"><b>5</b><span>独立 Git 仓库</span></div>
+        <div class="stat"><b>6</b><span>核心数据实体</span></div>
+        <div class="stat"><b>agoodbit.com</b><span>生产站点</span></div>
+        <div class="stat"><b>前端 v8 · 后端 v3</b><span>本地 VERSION（以各仓文件为准）</span></div>
+      </div>
+      <nav class="toc">
+        <a href="#repos">仓库清单</a>
+        <a href="#product">产品定位</a>
+        <a href="#modules">基础板块</a>
+        <a href="#model">数据模型</a>
+        <a href="#arch">架构与数据流</a>
+        <a href="#dev">本地开发</a>
+        <a href="#deploy">生产与发布</a>
+        <a href="#rules">工程约定</a>
+        <a href="#wip">进行中的工作</a>
+        <a href="#read">推荐阅读</a>
+      </nav>
+    </header>
+
+    <h2 id="repos">1. 仓库清单（必须全部拿到）</h2>
+    <p>GitHub 组织：<code>hackingangle</code>。除文档仓公开外，其余均为 <span class="badge priv">PRIVATE</span>，接手人需要被加为 collaborator。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>本地目录</th>
+          <th>GitHub 仓库</th>
+          <th>职责</th>
+          <th>可见性</th>
+          <th>默认分支</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>server/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-backend">heimdall-backend</a></td>
+          <td>FastAPI 控制平面：鉴权、项目、素材、Agent、Token、LLM 配置、AI 创作、文件存储、PDF 解析。同时负责主站 Nginx / SSL / 迁移。</td>
+          <td><span class="badge priv">PRIVATE</span></td>
+          <td>main</td>
+        </tr>
+        <tr>
+          <td><code>web/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-frontend">heimdall-frontend</a></td>
+          <td>React 管理台：项目工作台、素材库、AI 创作、定速提词、技能引导。静态资源部署到 ECS。</td>
+          <td><span class="badge priv">PRIVATE</span></td>
+          <td>main</td>
+        </tr>
+        <tr>
+          <td><code>heimdall/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-client">heimdall-client</a></td>
+          <td>SwiftUI 客户端（iOS / iPadOS / macOS / visionOS）。功能对齐网页，并承担跟读提词（流式 ASR）。</td>
+          <td><span class="badge priv">PRIVATE</span></td>
+          <td>main</td>
+        </tr>
+        <tr>
+          <td><code>asr/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-asr">heimdall-asr</a></td>
+          <td>独立流式转写服务。只做 PCM → 阿里云 ISI → partial/final 事件，不碰项目/素材。</td>
+          <td><span class="badge priv">PRIVATE</span></td>
+          <td>main</td>
+        </tr>
+        <tr>
+          <td><code>docs/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-docs">heimdall-docs</a></td>
+          <td>PRD、设计规格、Harness 技能包（<code>setup-heimdall.sh</code>）。技能正文以本仓为准。</td>
+          <td><span class="badge pub">PUBLIC</span></td>
+          <td>main</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>不是独立仓库、但会出现在工作区里</h3>
+    <table>
+      <thead>
+        <tr><th>路径</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>deploy/</code></td>
+          <td>历史遗留。真正的部署脚本已迁入 <code>server/deploy</code>、<code>web/deploy</code>、<code>asr/deploy</code>。本目录<strong>禁止</strong>再当发布入口。</td>
+        </tr>
+        <tr>
+          <td>根目录 <code>README.md</code>、<code>.cursor/rules/</code></td>
+          <td>工作区级说明与 Cursor 规则（架构简单、版本 +1）。根目录本身没有 git。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      克隆时请分别 clone 这 5 个仓库，保持与现有工作区相同的目录名（<code>server</code> / <code>web</code> / <code>heimdall</code> / <code>asr</code> / <code>docs</code>），这样各仓 <code>CLAUDE.md</code> 里的相对路径才成立。
+    </div>
+
+    <h2 id="product">2. 产品定位（接手前先读懂这一段）</h2>
+    <p>
+      <b>Heimdall</b> 是 YouTube 口播稿创作工作台，也是外部 Agent（Claude Code / Cursor / OpenClaw / Hermes）的共享数据层。
+      设计哲学是<b>机制与策略分离</b>：后端只存数据、守规则；怎么调研、怎么写稿，交给外部 Harness 或平台内的 Agent。
+    </p>
+    <p>1.0 验证场景：用户建一期节目 → 收集素材（人手 / API / PDF）→ 用 Agent 基于素材创作 → 产出仍是素材 → 提词录制。</p>
+    <div class="callout ok">
+      核心决策：<b>创作结果即素材</b>。没有独立的「产物 / Generation / Task 黑板」实体。手动录入、外部 Agent 写入、AI 生成，全部落在 <code>Material</code> 一张表，用 <code>source = manual | api | generated</code> 区分。
+    </div>
+
+    <h2 id="modules">3. 基础板块功能</h2>
+    <p>网页（<a href="https://www.agoodbit.com">www.agoodbit.com</a>）与 iOS 客户端板块对齐。下面按「用户能做什么」写，而不是按文件名写。</p>
+
+    <div class="cards">
+      <div class="card">
+        <h3>账号与准入</h3>
+        <p>谁能进系统</p>
+        <ul>
+          <li>注册 / 登录 / 退出；JWT 会话</li>
+          <li>生产环境注册需要暗号 <code>invite_code</code>（<code>HEIMDALL_REGISTRATION_PASSPHRASE</code>）</li>
+          <li>个人资料：显示名、emoji 头像（前后端预设必须对齐）</li>
+          <li>软删 / 封禁由后端 User 模型支撑</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>项目（节目期）</h3>
+        <p>路由 <code>/projects</code> · iOS Tab「项目」</p>
+        <ul>
+          <li>一期节目 = 一个 Project：<code>episode_no</code> + 标题 + 分类</li>
+          <li><code>episode_no</code> 按用户隔离，缺省取 max+1，冲突 409</li>
+          <li>列表 CRUD；点进详情进入工作台</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>素材库</h3>
+        <p>项目详情左侧。唯一内容实体</p>
+        <ul>
+          <li>文本录入 / 编辑 / 删除；Markdown 预览</li>
+          <li>按来源 Tab 筛选：手动 / API / AI 生成</li>
+          <li>PDF 等原件上传到 OSS 或本地盘；DB 只存 key</li>
+          <li>PDF 自动抽取正文（PyMuPDF）；扫描件标 failed，等后续 OCR</li>
+          <li>列表分页、摘要不回全文（性能已处理过）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>AI 创作</h3>
+        <p>项目详情右侧 CreationPanel</p>
+        <ul>
+          <li>选 Agent + 勾选已 ready 的素材 + 补充指令</li>
+          <li>POST 素材时带 <code>agent_id</code>，立即返回 <code>generating</code></li>
+          <li>后台调 OpenAI 兼容 LLM，回填 ready / failed</li>
+          <li>前端有 generating 行时每 2 秒轮询素材本身</li>
+          <li>产出仍是素材，可再当下一轮输入（链式创作）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>智能体 Agent</h3>
+        <p>路由 <code>/agents</code> · 平台级、按用户隔离</p>
+        <ul>
+          <li>名称、用途、系统提示词</li>
+          <li>绑定一条用户自己的 LLM 配置；空则用全局默认</li>
+          <li>外部 Harness 也可读 Agent 定义来执行创作</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>LLM 配置</h3>
+        <p>用户菜单 → 模型接入</p>
+        <ul>
+          <li>用户维度：name / base_url / api_key / model</li>
+          <li>响应里 api_key 只回掩码</li>
+          <li>删除配置后，引用它的 Agent 回退全局默认</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>API Token</h3>
+        <p>给外部 Agent 用的钥匙</p>
+        <ul>
+          <li>签发时明文只展示一次，形如 <code>hd_…</code></li>
+          <li>库里只存 sha256；列表展示 prefix</li>
+          <li>可吊销；同一 Bearer 头，<code>hd_</code> 走 Token，否则走 JWT</li>
+          <li>Token 通道写入的素材 <code>source=api</code></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>技能引导</h3>
+        <p>路由 <code>/guide</code></p>
+        <ul>
+          <li>教用户在 Claude Code / Cursor / OpenClaw / Hermes 装技能</li>
+          <li>一键脚本：<code>docs/skills/claude-code/setup-heimdall.sh</code></li>
+          <li>三件套：doctor（自检）/ collect（调研编排）/ material（入库规范）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>提词器 · Web</h3>
+        <p>素材详情里打开，面向录制</p>
+        <ul>
+          <li>深色大字、按段落渲染</li>
+          <li><b>定速自动滚动</b>（空格暂停，速度/字号本地持久化）</li>
+          <li>点击段落定位，方便分段重录</li>
+          <li>Web <b>没有</b>跟读 ASR</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>提词器 · iOS 跟读</h3>
+        <p>客户端独家能力</p>
+        <ul>
+          <li>麦克风 PCM → <code>wss://www.agoodbit.com/asr/</code></li>
+          <li>说到哪滚到哪：ScriptFollower 对齐口播稿</li>
+          <li>口令「回上一句」；诊断页看识别原文</li>
+          <li>近期方向：去掉手动/定速，只保留跟读（见进行中分支）</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>诊断</h3>
+        <p>排障用，不是业务实体</p>
+        <ul>
+          <li>Web：DebugPanel；顶栏显示「前端 vN · 后端 vM」</li>
+          <li>iOS：独立「诊断日志」窗口 + FAB；可改 API / ASR 地址</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>三个 Harness 技能（策略层，不在后端里）</h3>
+    <table>
+      <thead>
+        <tr><th>技能</th><th>何时用</th><th>做什么</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>heimdall-doctor</code></td>
+          <td>新环境或 API 报错</td>
+          <td>连通、Token、素材 API 冒烟</td>
+        </tr>
+        <tr>
+          <td><code>heimdall-collect</code></td>
+          <td>给一期节目做调研</td>
+          <td>写调研计划 → 分轮收集 → 维护索引，可续跑</td>
+        </tr>
+        <tr>
+          <td><code>heimdall-material</code></td>
+          <td>每条素材入库时</td>
+          <td>标题/出处格式、原文保留、来源 URL 与底稿留档</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>本机另有 Cursor/Claude 技能副本：<code>~/.cursor/skills/heimdall-materials</code>、<code>heimdall-research</code>、<code>laoliang-koubo</code>（口播稿风格，可回写 Heimdall）。</p>
+
+    <h2 id="model">4. 数据模型（6 张表，不要再加）</h2>
+    <table>
+      <thead>
+        <tr><th>实体</th><th>范围</th><th>必要字段（概念）</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>User</td>
+          <td>平台</td>
+          <td>注册登录、软删/封禁</td>
+        </tr>
+        <tr>
+          <td>Project</td>
+          <td>用户</td>
+          <td><code>episode_no</code>（用户内唯一）、title、category</td>
+        </tr>
+        <tr>
+          <td>Material</td>
+          <td>项目</td>
+          <td>title / content / type(text|pdf) / source / status / 原件 key / 抽取状态 / 生成溯源（agent_id、input_material_ids、user_prompt、error）/ raw_content / origin_url</td>
+        </tr>
+        <tr>
+          <td>Agent</td>
+          <td>用户</td>
+          <td>name、description、system_prompt、llm_config_id</td>
+        </tr>
+        <tr>
+          <td>LlmConfig</td>
+          <td>用户</td>
+          <td>name、base_url、api_key、model</td>
+        </tr>
+        <tr>
+          <td>ApiToken</td>
+          <td>用户</td>
+          <td>token_hash、prefix、revoked_at</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      已被刻意删除、禁止加回来：独立 Generation/产物实体；Task/Record 黑板；project 的派生 <code>status</code> / <code>payload</code>；task 的 <code>type/result/version</code>。
+      新增任何表或字段前先问：现有实体能不能承载？删掉它会怎样？
+    </div>
+
+    <h2 id="arch">5. 架构与数据流</h2>
+    <div class="flow">浏览器 / iOS 客户端
+        │  HTTPS  https://www.agoodbit.com
+        ▼
+   Nginx（heimdall-backend 部署）
+        ├─ /            前端静态（heimdall-frontend 单独 Deploy）
+        ├─ /api /health  FastAPI（server/）
+        └─ /asr/        include 片段 → heimdall-asr WebSocket
+
+iOS 跟读：麦克风 PCM ──WSS──► asr/server.py ──NLS──► 阿里云 ISI
+                              只回 partial / final，不落盘、不知项目
+
+外部 Agent：Bearer hd_xxx ──► 同一套 /api（projects / materials / agents）
+
+AI 创作：前端勾选素材 → POST material(agent_id) → BackgroundTasks → LLM → 回填 Material</div>
+
+    <h3>后端技术栈</h3>
+    <p>Python 3.11 · FastAPI · SQLAlchemy 2.0 · Alembic · Pydantic v2 · uv · MySQL 8 · 阿里云 OSS。质量门禁：ruff + mypy --strict + pytest。<code>make check</code> 必须绿。</p>
+    <h3>前端技术栈</h3>
+    <p>React 19 · TypeScript · Vite · Ant Design · TanStack Query · axios。分层：<code>pages → hooks → api</code>。组件不直接打接口。<code>npm run check</code> 必须绿。</p>
+    <h3>客户端技术栈</h3>
+    <p>SwiftUI，Xcode 工程在 <code>heimdall/</code>。Stores + Networking 对齐 REST。跟读链路：AudioCapture → StreamingASRClient → ScriptFollower → TeleprompterController。</p>
+    <h3>ASR</h3>
+    <p><code>ASR_MODE=isi</code>（推荐）/ <code>mock</code> / <code>dashscope</code>。生产走阿里云智能语音交互。健康检查：<code>https://www.agoodbit.com/asr/health</code>。</p>
+
+    <h3>主要 API（均在 <code>/api</code>）</h3>
+    <table>
+      <thead>
+        <tr><th>模块</th><th>端点要点</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>auth</td><td>register / login / me / logout</td></tr>
+        <tr><td>projects</td><td>CRUD</td></tr>
+        <tr><td>materials</td><td>项目下创建/列表；单条 GET/PATCH/DELETE；<code>PUT/GET …/file</code>、<code>GET …/file-url</code>；带 agent_id 即创作</td></tr>
+        <tr><td>agents</td><td>CRUD</td></tr>
+        <tr><td>tokens</td><td>签发 / 列表 / 吊销</td></tr>
+        <tr><td>llm_configs</td><td>用户模型接入 CRUD</td></tr>
+        <tr><td>health</td><td><code>GET /health</code> 返回 status、db、version</td></tr>
+      </tbody>
+    </table>
+    <p>交互文档：本地 <code>http://127.0.0.1:8000/docs</code>。错误契约统一为 <code>{"error":{"code","message"}}</code>。</p>
+
+    <h2 id="dev">6. 本地怎么跑起来</h2>
+    <pre><code># 1) 后端（需 MySQL；复制 server/.env.example → .env）
+cd server
+make install
+make migrate
+make dev          # :8000
+
+# 2) 前端
+cd web
+cp .env.example .env.local   # VITE_API_BASE=http://127.0.0.1:8000
+npm install
+npm run dev                  # :5173
+
+# 3) ASR（跟读才需要）
+cd asr
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+export ASR_MODE=isi
+export NLS_APPKEY=...
+export ALIYUN_AK_ID=...
+export ALIYUN_AK_SECRET=...
+python server.py             # ws://0.0.0.0:9001
+
+# 4) iOS：用 Xcode 打开 heimdall/ 工程
+#    设置里 API 默认为 https://www.agoodbit.com
+#    本地后端可改为 http://局域网IP:8000
+#    本地 ASR 改为 ws://127.0.0.1:9001</code></pre>
+
+    <h2 id="deploy">7. 生产环境与发布纪律</h2>
+    <table>
+      <thead>
+        <tr><th>项</th><th>值</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>站点</td><td><a href="https://www.agoodbit.com">https://www.agoodbit.com</a></td></tr>
+        <tr><td>API 健康</td><td><code>curl https://www.agoodbit.com/health</code></td></tr>
+        <tr><td>ASR</td><td><code>wss://www.agoodbit.com/asr/</code> · <code>/asr/health</code></td></tr>
+        <tr><td>ECS</td><td>见各仓 <code>deploy/README.md</code> 的 <code>DEPLOY_HOST</code>（GitHub Secrets，勿写进业务代码）</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      <b>生产只允许 CI 部署。</b>禁止本机跑 <code>deploy.sh</code>、rsync、scp 或手工 SSH 改代码。
+      入口只有三个 GitHub Actions <b>Deploy</b> workflow：<code>heimdall-backend</code>、<code>heimdall-frontend</code>、<code>heimdall-asr</code>。
+      密钥只存在各仓 Settings → Secrets，不提交 <code>production.env</code>。
+    </div>
+    <p>日常发布：推 <code>main</code> → CI 全绿会自动 Deploy；也可在 Actions 里手动 Run workflow。首次顺序：先 backend（基础设施 + API），再 frontend，再 asr（Nginx 通过 <code>include /etc/nginx/heimdall-includes/*.conf</code> 挂 ASR）。</p>
+    <p>各仓 Deploy 所需 Secrets 名称见：</p>
+    <ul class="compact">
+      <li><code>server/deploy/README.md</code>（数据库、JWT、OSS、LLM、注册暗号、CORS）</li>
+      <li><code>web/deploy/README.md</code>（<code>VITE_API_BASE</code> + SSH）</li>
+      <li><code>asr/deploy/README.md</code>（NLS / 阿里云 AK）</li>
+    </ul>
+
+    <h3>版本号</h3>
+    <p>顶栏 Tooltip 显示「前端 vN · 后端 vM」。N、M 分别来自 <code>web/VERSION</code>、<code>server/VERSION</code>，必须是递增整数。</p>
+    <ul class="compact">
+      <li>改了 <code>web/</code> 功能 → 同一 commit 把 <code>web/VERSION</code> +1</li>
+      <li>改了 <code>server/</code> 功能 → 同一 commit 把 <code>server/VERSION</code> +1</li>
+      <li>两边都改 → 两个仓各自 +1、各自提交</li>
+      <li>纯文档 / 纯规则、不改行为 → 不必 bump</li>
+    </ul>
+
+    <h2 id="rules">8. 工程约定（违反就会把系统做复杂）</h2>
+    <ul class="compact">
+      <li><b>简单、高可用</b>。不为假想需求预留抽象。每个实体、字段、端点都要能回答「删掉会怎样」。</li>
+      <li>后端：路由薄、服务厚、模型纯。业务规则只活在 <code>services/</code>，不要在 service 里 raise HTTPException。</li>
+      <li>前端：组件纯 props；页面才组合 hooks。缓存键集中在 hooks 的 <code>xxxKeys</code>。</li>
+      <li>iOS：项目流的 <code>navigationDestination</code> 必须挂在根 <code>NavigationStack</code>，子页再挂一层会导致素材点击静默失败。</li>
+      <li>加依赖：后端用 <code>uv add</code>，前端用 <code>npm install</code>，不要手改锁文件意图。</li>
+      <li>各仓 AI 工作约定：<code>server/CLAUDE.md</code>、<code>web/CLAUDE.md</code>（比根 README 新；根 README 仍停留在早期脚手架表述，以 CLAUDE.md 和代码为准）。</li>
+    </ul>
+
+    <h2 id="wip">9. 交接时点上的未完成工作（2026-08-19 本地快照）</h2>
+    <p>下列是工作区当时的分支，<b>不一定已合进 main</b>。接手后先 <code>git fetch</code> 再对一下远端。</p>
+    <table>
+      <thead>
+        <tr><th>仓库</th><th>分支</th><th>含义</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>heimdall-backend</td>
+          <td><code>chore/nginx-asr-include</code></td>
+          <td>主站 Nginx include ASR 反代片段，避免 backend 部署冲掉 /asr/。相关 PR 曾开过。</td>
+        </tr>
+        <tr>
+          <td>heimdall-backend / frontend / client</td>
+          <td><code>feat/material-pdf-export</code></td>
+          <td>素材导出 PDF。docs 的 main 也超前 2 commit（实现计划）。</td>
+        </tr>
+        <tr>
+          <td>heimdall-frontend</td>
+          <td><code>feat/continuous-pdf-reader</code></td>
+          <td>连续 PDF 阅读（worktree 存在）。</td>
+        </tr>
+        <tr>
+          <td>heimdall-client</td>
+          <td><code>feat/script-follow-teleprompter</code></td>
+          <td>跟读提词 + 口令回上一句。当时的工作分支。</td>
+        </tr>
+        <tr>
+          <td>heimdall-client</td>
+          <td><code>feat/h5-ios-usability-parity</code></td>
+          <td>H5 / iOS 可用性对齐（worktree）。历史上 PDFKit 连续阅读、行点击导航出过问题。</td>
+        </tr>
+        <tr>
+          <td>heimdall-asr</td>
+          <td><code>main</code></td>
+          <td>相对干净。最近：句尾静音判停 500ms，缩短跟读 final 延迟。</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      已知产品债：根目录 README 和部分 CLAUDE.md 仍写着「tasks/records 待实现」，那是旧黑板方案，<b>已经否决</b>。以第 4 节 6 张表为准。PRD 里「任务表驱动 + OpenClaw 切换」是愿景；落地形态已收成「数据层 + 技能 + 平台内创作」。
+    </div>
+
+    <h2 id="read">10. 接手第一周建议</h2>
+    <ol>
+      <li>要到 4 个私有仓的 GitHub 权限，以及生产 Secrets 的查阅/轮换权限（不要用个人电脑直接 SSH 生产）。</li>
+      <li>本地按第 6 节把 backend + frontend 跑通，用网页走完：注册 → 建项目 → 录入素材 → 配 Agent → 创作一条 → 打开提词器。</li>
+      <li>读 <code>docs/prds/Heimdall PRD.md</code> 和 <code>docs/superpowers/specs/2026-07-04-creation-workflow-design.md</code>。</li>
+      <li>在网页「技能引导」签发 Token，对外部 Agent 跑一遍 <code>heimdall-doctor</code>。</li>
+      <li>iOS 真机连生产 ASR，走一次跟读，打开诊断确认有真实识别文本。</li>
+      <li>看清第 9 节未合并分支，决定合入还是废弃，避免两套 PDF/提词器方案并行。</li>
+    </ol>
+
+    <h3>关键文件速查</h3>
+    <table>
+      <thead>
+        <tr><th>想了解</th><th>先打开</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>后端领域与禁加字段</td><td><code>server/CLAUDE.md</code></td></tr>
+        <tr><td>前端页面与分层</td><td><code>web/CLAUDE.md</code>、<code>web/src/App.tsx</code></td></tr>
+        <tr><td>路由装配</td><td><code>server/app/main.py</code>、<code>web/src/main.tsx</code></td></tr>
+        <tr><td>iOS 入口与 Tab</td><td><code>heimdall/heimdall/heimdallApp.swift</code>、<code>RootView.swift</code></td></tr>
+        <tr><td>跟读对齐</td><td><code>heimdall/heimdall/Features/Teleprompter/</code></td></tr>
+        <tr><td>ASR 协议</td><td><code>asr/README.md</code></td></tr>
+        <tr><td>发布</td><td>各仓 <code>deploy/README.md</code> + <code>.github/workflows/deploy.yml</code></td></tr>
+        <tr><td>技能</td><td><code>docs/skills/</code></td></tr>
+      </tbody>
+    </table>
+
+    <footer>
+      文档生成日期：2026-08-19。依据工作区当时的代码、各仓 remote 与 GitHub 元数据整理，供交接维护使用。
+      生产密钥、注册暗号、数据库连接串不写在本文中，只存在 GitHub Secrets。
+    </footer>
+  </div>
+</body>
+</html>
