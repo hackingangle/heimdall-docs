@@ -4,14 +4,18 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_RAW="https://raw.githubusercontent.com/hackingangle/heimdall-docs/main/skills/claude-code"
-SKILLS=(heimdall-collect heimdall-material heimdall-doctor)
+SKILLS=(heimdall-collect heimdall-material heimdall-doctor heimdall-write)
 
 CLAUDE_DIR="$HOME/.claude/skills"
-CURSOR_DIR="$HOME/.cursor/skills-cursor"
+CURSOR_DIR="$HOME/.cursor/skills"
+# 旧版本误把技能装进 Cursor 内置技能目录（系统托管，不接受外部写入）。
+CURSOR_LEGACY_DIR="$HOME/.cursor/skills-cursor"
 OPENCLAW_DIR="$HOME/.openclaw/skills"
 HERMES_DIR="$HOME/.hermes/skills/heimdall"
+LOCK_FILE="$HOME/.heimdall/skills.lock"
 
 declare -a TARGETS=()
+declare -a SKILL_HASHES=()
 
 detect_claude() { command -v claude &>/dev/null || [[ -d "$HOME/.claude" ]]; }
 detect_cursor() { [[ -d "$HOME/.cursor" ]]; }
@@ -52,6 +56,36 @@ auto_detect_targets() {
   echo ""
 }
 
+migrate_cursor_legacy() {
+  [[ -d "$CURSOR_LEGACY_DIR" ]] || return 0
+  local cleaned=0
+  local dir
+  for dir in "$CURSOR_LEGACY_DIR"/heimdall-*; do
+    [[ -d "$dir" ]] || continue
+    rm -rf "$dir"
+    cleaned=1
+  done
+  if [[ $cleaned -eq 1 ]]; then
+    echo "==> 已清理误装在 Cursor 内置技能目录的旧副本（${CURSOR_LEGACY_DIR}）"
+    echo "    技能改装到 $CURSOR_DIR"
+    echo ""
+  fi
+}
+
+record_hash() {
+  local skill="$1"
+  local file="$2"
+  local entry
+  if [[ ${#SKILL_HASHES[@]} -gt 0 ]]; then
+    for entry in "${SKILL_HASHES[@]}"; do
+      if [[ "$entry" == "$skill="* ]]; then
+        return 0
+      fi
+    done
+  fi
+  SKILL_HASHES+=("$skill=$(shasum -a 256 "$file" | awk '{print $1}')")
+}
+
 install_to() {
   local dir="$1"
   mkdir -p "$dir"
@@ -62,8 +96,26 @@ install_to() {
     else
       curl -fsSL "$REPO_RAW/$skill/SKILL.md" -o "$dir/$skill/SKILL.md"
     fi
+    record_hash "$skill" "$dir/$skill/SKILL.md"
     echo "  ✓ $skill"
   done
+}
+
+write_lock() {
+  mkdir -p "$(dirname "$LOCK_FILE")"
+  {
+    echo "# Heimdall 技能安装记录（由 install-skills.sh 生成，供 check-skills.sh 比对）"
+    if use_local_source; then
+      echo "source=$SCRIPT_DIR"
+    else
+      echo "source=$REPO_RAW"
+    fi
+    echo "installed_at=$(date +%Y-%m-%dT%H:%M:%S%z)"
+    echo "targets=${TARGETS[*]}"
+    for entry in "${SKILL_HASHES[@]}"; do
+      echo "$entry"
+    done
+  } >"$LOCK_FILE"
 }
 
 if [[ "${1:-}" == "--detect" ]]; then
@@ -90,6 +142,8 @@ if [[ ${#TARGETS[@]} -eq 0 ]]; then
   exit 1
 fi
 
+migrate_cursor_legacy
+
 if use_local_source; then
   echo "==> 从本地 heimdall-docs 安装/更新 Heimdall 技能"
 else
@@ -101,4 +155,7 @@ for dir in "${TARGETS[@]}"; do
   install_to "$dir"
 done
 
+write_lock
+
 echo "✅ 完成：${SKILLS[*]}"
+echo "   安装记录：${LOCK_FILE}（用 check-skills.sh 查是否过期）"

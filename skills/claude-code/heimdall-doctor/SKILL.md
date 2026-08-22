@@ -1,15 +1,26 @@
 ---
 name: heimdall-doctor
 description: >
-  Heimdall 平台自检技能：验证 Heimdall 服务连通、API Token 有效性与素材 API 读写。
-  当用户要求"检查 Heimdall 环境 / 自检"，或素材读写出现 401/413/422 等平台侧报错时激活。
-  只检查平台侧；素材获取手段不做假定，抓取/转换工具由模型按需自行保证可用。
+  Heimdall 平台自检技能：验证本机技能是否过期，以及 Heimdall 服务连通、API Token 有效性与素材 API 读写。
+  当用户要求"检查 Heimdall 环境 / 自检 / 技能是不是最新"，或素材读写出现 401/413/422 等平台侧报错时激活。
+  只检查平台侧与技能版本；素材获取手段不做假定，抓取/转换工具由模型按需自行保证可用。
 tools: Read, Bash
 ---
 
 # Heimdall 平台自检技能
 
-新环境、或素材读写报错时先跑这个。只查平台侧三层，全绿即可开始收集任务。
+新环境、或素材读写报错时先跑这个。只查平台侧，全绿即可开始收集任务。
+
+## 0. 技能版本自检（先做）
+
+本机技能是各 Harness 里的副本，真源在 heimdall-docs main。先确认没过期：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hackingangle/heimdall-docs/main/skills/claude-code/check-skills.sh | bash
+```
+
+- 退出码 0 = 全部对齐；1 = 有过期或未安装（脚本会打印同步命令，跑一条即可，不用重输 Token）；2 = 缺安装记录或拉不到真源。
+- 报过期就先同步再继续后面的检查——照着旧技能排查平台问题会得出错误结论。
 
 ## 1. 环境变量与连通
 
@@ -42,4 +53,4 @@ curl -sS "$HEIMDALL_API_BASE/projects" -H "Authorization: Bearer $HEIMDALL_API_T
 
 ## 4. 产出
 
-汇报状态表（环境变量 / 连通 / Token / 素材 API，每项 ✅/❌ + 修复动作）。临时测试素材必须清理。
+汇报状态表（技能版本 / 环境变量 / 连通 / Token / 素材 API，每项 ✅/❌ + 修复动作）。临时测试素材必须清理。

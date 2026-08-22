@@ -2,10 +2,22 @@
 
 > 供 Claude Code 等外部 Harness 作为技能装载。在跑收集任务之前，验证 Heimdall 平台侧的连通与凭证；新环境、或素材读写报错时先跑这个。
 >
-> 只检查**平台侧**（服务、Token、素材 API）。素材获取手段不做假定，因此不检查任何抓取/转换工具——模型用什么手段，就自行保证该手段可用。
+> 只检查**技能版本**与**平台侧**（服务、Token、素材 API）。素材获取手段不做假定，因此不检查任何抓取/转换工具——模型用什么手段，就自行保证该手段可用。
 
 - 日期：2026-07-06
-- 服务对象：[heimdall-collect-skill](./heimdall-collect-skill.md) / [heimdall-material-skill](./heimdall-material-skill.md)
+- 服务对象：[heimdall-collect-skill](./heimdall-collect-skill.md) / [heimdall-material-skill](./heimdall-material-skill.md) / [heimdall-write-skill](./heimdall-write-skill.md)
+
+## 0. 技能版本自检（先做）
+
+各 Harness 里的技能都是副本，真源是本仓 `skills/claude-code/`。`install-skills.sh` 安装时会把各技能的 sha256 与安装目录写进 `~/.heimdall/skills.lock`，自检脚本据此比对：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/hackingangle/heimdall-docs/main/skills/claude-code/check-skills.sh | bash
+```
+
+- 逐技能逐目录输出 `对齐 / 过期 / 未安装`。
+- 退出码：`0` 全部对齐；`1` 有过期或未安装（脚本打印同步命令，跑一条覆盖安装即可，不涉及 Token）；`2` 无法比对（没有安装记录，或拉不到真源）。
+- 报过期先同步再往下查——拿旧技能排查平台问题会得出错误结论。
 
 ## 1. 环境变量与连通
 
@@ -41,4 +53,4 @@ curl -sS "$HEIMDALL_API_BASE/projects" -H "Authorization: Bearer $HEIMDALL_API_T
 
 ## 4. 产出
 
-向用户汇报状态表（环境变量 / 后端连通 / Token / 素材 API 生命周期，每项 ✅ 或 ❌ + 修复动作），全绿即可开始收集任务。临时测试素材必须清理。
+向用户汇报状态表（技能版本 / 环境变量 / 后端连通 / Token / 素材 API 生命周期，每项 ✅ 或 ❌ + 修复动作），全绿即可开始收集任务。临时测试素材必须清理。

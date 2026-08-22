@@ -242,7 +242,7 @@ deploy/nginx/asr-location.conf  →  /etc/nginx/heimdall-includes/asr.conf
 |---|---|
 | `prds/Heimdall PRD 1.0.md` | 现行产品说明 |
 | `Heimdall-技术实现交接.md` | 本文 |
-| `skills/claude-code/` | doctor / collect / material |
+| `skills/claude-code/` | doctor / collect / material / write + 安装（`install-skills.sh`）与过期自检（`check-skills.sh`） |
 | `superpowers/specs/` | 设计规格 |
 | `prds/Heimdall PRD.md` | 旧愿景，勿当实现依据 |
 

@@ -17,6 +17,8 @@ tools: Read, Write, Bash, WebSearch, WebFetch
 
 **所有收集产出必须关联到一个项目**——调研计划、调研索引、正文素材一律写入 `projects/{project_id}/materials`，不要悬空入库。
 
+**技能过期先同步**：本机技能是副本，真源在 heimdall-docs main。任务开跑前或平台行为与技能描述不符时，跑 heimdall-doctor 的技能版本自检（或直接 `curl -fsSL https://raw.githubusercontent.com/hackingangle/heimdall-docs/main/skills/claude-code/install-skills.sh | bash` 覆盖安装，不需要重输 Token）。
+
 ## 0. 确定目标项目（每次激活先做）
 
 1. **环境检查**（见 heimdall-material §0）：确认 `HEIMDALL_API_BASE` / `HEIMDALL_API_TOKEN` 可用，并拉取项目列表：

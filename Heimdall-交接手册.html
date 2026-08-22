@@ -371,8 +371,8 @@
         <p>路由 <code>/guide</code></p>
         <ul>
           <li>教用户在 Claude Code / Cursor / OpenClaw / Hermes 装技能</li>
-          <li>一键脚本：<code>docs/skills/claude-code/setup-heimdall.sh</code></li>
-          <li>三件套：doctor（自检）/ collect（调研编排）/ material（入库规范）</li>
+          <li>一键脚本：<code>docs/skills/claude-code/setup-heimdall.sh</code>（初始化）、<code>install-skills.sh</code>（更新）、<code>check-skills.sh</code>（过期自检）</li>
+          <li>四件套：doctor（自检）/ collect（调研编排）/ material（入库规范）/ write（写作成稿）</li>
         </ul>
       </div>
       <div class="card">
@@ -405,7 +405,7 @@
       </div>
     </div>
 
-    <h3>三个 Harness 技能（策略层，不在后端里）</h3>
+    <h3>四个 Harness 技能（策略层，不在后端里）</h3>
     <table>
       <thead>
         <tr><th>技能</th><th>何时用</th><th>做什么</th></tr>
@@ -414,7 +414,7 @@
         <tr>
           <td><code>heimdall-doctor</code></td>
           <td>新环境或 API 报错</td>
-          <td>连通、Token、素材 API 冒烟</td>
+          <td>技能版本自检、连通、Token、素材 API 冒烟</td>
         </tr>
         <tr>
           <td><code>heimdall-collect</code></td>
@@ -426,9 +426,14 @@
           <td>每条素材入库时</td>
           <td>标题/出处格式、原文保留、来源 URL 与底稿留档</td>
         </tr>
+        <tr>
+          <td><code>heimdall-write</code></td>
+          <td>素材收够后成稿</td>
+          <td>读该期素材写大纲/口播稿/标题，成稿回写为素材</td>
+        </tr>
       </tbody>
     </table>
-    <p>本机另有 Cursor/Claude 技能副本：<code>~/.cursor/skills/heimdall-materials</code>、<code>heimdall-research</code>、<code>laoliang-koubo</code>（口播稿风格，可回写 Heimdall）。</p>
+    <p>技能正文只在 <code>docs/skills/claude-code/</code> 维护一份，<code>install-skills.sh</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.sh</code> 据此判断是否过期。</p>
 
     <h2 id="model">4. 数据模型（6 张表，不要再加）</h2>
     <table>
