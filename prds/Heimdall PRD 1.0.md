@@ -217,7 +217,7 @@ sequenceDiagram
 | 能力 | 说明 |
 |---|---|
 | API Token | 网页签发，明文只显示一次，可吊销 |
-| 技能引导页 | Claude Code / Cursor / OpenClaw / Hermes 一键安装 |
+| 智能体页安装 | Claude Code / Cursor / Codex 一键安装 |
 | doctor | 自检连通 |
 | collect | 分轮调研，可续跑 |
 | material | 入库规范：留原文、留出处、不过度摘要 |

@@ -1,3 +1,5 @@
+> **已废弃（2026-08-29）**：入库契约已并入 [claude-code/heimdall-platform](./claude-code/heimdall-platform/SKILL.md)。下文仅作历史。
+
 # Heimdall 素材接入技能（heimdall-material-skill）
 
 > 供 Claude Code / OpenClaw / Hermes 等外部 Harness 作为技能装载。本技能描述如何凭 API Token 读写 Heimdall 的项目、素材与 Agent。

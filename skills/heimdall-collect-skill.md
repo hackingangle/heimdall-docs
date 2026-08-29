@@ -1,3 +1,5 @@
+> **已废弃（2026-08-29）**：收集策略在平台智能体「收集员」。现行技能是 [claude-code/heimdall-sync](./claude-code/heimdall-sync/SKILL.md) 与 [claude-code/heimdall-platform](./claude-code/heimdall-platform/SKILL.md)。下文仅作历史。
+
 # Heimdall 素材收集任务技能（heimdall-collect-skill）
 
 > 供 Claude Code 等外部 Harness 作为技能装载。把一期节目的选题变成一个可执行、可验收、可续跑的**收集任务**：调研简报 → 分轮执行 → 缺口盘点。

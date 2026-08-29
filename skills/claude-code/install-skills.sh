@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
-# Heimdall Harness 技能：自动检测本机 Harness 并安装/更新技能。
+# Heimdall 管道技能：检测本机 Harness，安装/更新 heimdall-sync 与 heimdall-platform。
+# 若已有 ~/.heimdall/env，接着同步平台智能体。
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_RAW="https://raw.githubusercontent.com/hackingangle/heimdall-docs/main/skills/claude-code"
-SKILLS=(heimdall-collect heimdall-material heimdall-doctor heimdall-write)
+SKILLS=(heimdall-sync heimdall-platform)
+LEGACY_SKILLS=(heimdall-collect heimdall-material heimdall-doctor heimdall-write)
 
 CLAUDE_DIR="$HOME/.claude/skills"
 CURSOR_DIR="$HOME/.cursor/skills"
-# 旧版本误把技能装进 Cursor 内置技能目录（系统托管，不接受外部写入）。
 CURSOR_LEGACY_DIR="$HOME/.cursor/skills-cursor"
+CODEX_DIR="$HOME/.agents/skills"
 OPENCLAW_DIR="$HOME/.openclaw/skills"
 HERMES_DIR="$HOME/.hermes/skills/heimdall"
 LOCK_FILE="$HOME/.heimdall/skills.lock"
@@ -19,11 +21,12 @@ declare -a SKILL_HASHES=()
 
 detect_claude() { command -v claude &>/dev/null || [[ -d "$HOME/.claude" ]]; }
 detect_cursor() { [[ -d "$HOME/.cursor" ]]; }
+detect_codex() { command -v codex &>/dev/null || [[ -d "$HOME/.codex" ]]; }
 detect_openclaw() { command -v openclaw &>/dev/null || [[ -d "$HOME/.openclaw" ]]; }
 detect_hermes() { command -v hermes &>/dev/null || [[ -d "$HOME/.hermes" ]]; }
 
 use_local_source() {
-  [[ -f "$SCRIPT_DIR/heimdall-collect/SKILL.md" ]]
+  [[ -f "$SCRIPT_DIR/heimdall-sync/SKILL.md" ]]
 }
 
 auto_detect_targets() {
@@ -40,6 +43,12 @@ auto_detect_targets() {
     TARGETS+=("$CURSOR_DIR")
   else
     echo "  [跳过] Cursor（未检测到 ~/.cursor）"
+  fi
+  if detect_codex; then
+    echo "  [已检测到] Codex → $CODEX_DIR"
+    TARGETS+=("$CODEX_DIR")
+  else
+    echo "  [跳过] Codex（未检测到 codex 命令或 ~/.codex）"
   fi
   if detect_openclaw; then
     echo "  [已检测到] OpenClaw → $OPENCLAW_DIR"
@@ -72,6 +81,17 @@ migrate_cursor_legacy() {
   fi
 }
 
+remove_legacy_skills() {
+  local dir="$1"
+  local name
+  for name in "${LEGACY_SKILLS[@]}"; do
+    if [[ -d "$dir/$name" ]]; then
+      rm -rf "$dir/$name"
+      echo "  − 已移除旧技能 $name"
+    fi
+  done
+}
+
 record_hash() {
   local skill="$1"
   local file="$2"
@@ -89,6 +109,7 @@ record_hash() {
 install_to() {
   local dir="$1"
   mkdir -p "$dir"
+  remove_legacy_skills "$dir"
   for skill in "${SKILLS[@]}"; do
     mkdir -p "$dir/$skill"
     if use_local_source; then
@@ -137,7 +158,7 @@ fi
 
 if [[ ${#TARGETS[@]} -eq 0 ]]; then
   echo "未检测到可安装的 Harness 环境。"
-  echo "请确认已安装 Claude Code / Cursor / OpenClaw / Hermes 之一，或手动指定："
+  echo "请确认已安装 Claude Code / Cursor / Codex / OpenClaw / Hermes 之一，或手动指定："
   echo '  SKILLS_DIRS="$HOME/.claude/skills" bash install-skills.sh'
   exit 1
 fi
@@ -145,9 +166,9 @@ fi
 migrate_cursor_legacy
 
 if use_local_source; then
-  echo "==> 从本地 heimdall-docs 安装/更新 Heimdall 技能"
+  echo "==> 从本地 heimdall-docs 安装/更新 Heimdall 管道技能"
 else
-  echo "==> 从 GitHub 安装/更新 Heimdall 技能"
+  echo "==> 从 GitHub 安装/更新 Heimdall 管道技能"
 fi
 
 for dir in "${TARGETS[@]}"; do
@@ -159,3 +180,12 @@ write_lock
 
 echo "✅ 完成：${SKILLS[*]}"
 echo "   安装记录：${LOCK_FILE}（用 check-skills.sh 查是否过期）"
+
+if [[ -f "${HEIMDALL_ENV_FILE:-$HOME/.heimdall/env}" ]]; then
+  echo ""
+  if [[ -f "$SCRIPT_DIR/install-agents.sh" ]]; then
+    bash "$SCRIPT_DIR/install-agents.sh"
+  else
+    curl -fsSL "$REPO_RAW/install-agents.sh" | bash
+  fi
+fi

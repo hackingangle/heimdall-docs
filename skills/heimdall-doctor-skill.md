@@ -1,3 +1,5 @@
+> **已废弃（2026-08-29）**：版本自检见 heimdall-sync，连通见 heimdall-platform。下文仅作历史。
+
 # Heimdall 平台自检技能（heimdall-doctor-skill）
 
 > 供 Claude Code 等外部 Harness 作为技能装载。在跑收集任务之前，验证 Heimdall 平台侧的连通与凭证；新环境、或素材读写报错时先跑这个。

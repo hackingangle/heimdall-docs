@@ -1,15 +1,23 @@
 #!/usr/bin/env bash
-# Heimdall Harness 技能：检查本机各 Harness 的技能是否与 heimdall-docs main 一致。
-# 退出码：0 全部对齐；1 有过期或未安装；2 无法比对（缺安装记录 / 拉不到真源）。
+# 检查本机管道技能是否与 heimdall-docs main 一致；有 env 时顺便看智能体投影记录。
+# 退出码：0 全部对齐；1 有过期或未安装；2 无法比对。
 set -euo pipefail
 
 CANONICAL_RAW="https://raw.githubusercontent.com/hackingangle/heimdall-docs/main/skills/claude-code"
-# 真源默认取 heimdall-docs main；本地开发可用 REPO_RAW 指向别处（含 file:// 路径）。
 REPO_RAW="${REPO_RAW:-$CANONICAL_RAW}"
-SKILLS=(heimdall-collect heimdall-material heimdall-doctor heimdall-write)
+SKILLS=(heimdall-sync heimdall-platform)
 LOCK_FILE="$HOME/.heimdall/skills.lock"
-# 给用户的命令始终指向线上真源，不受 REPO_RAW 覆盖影响。
-UPDATE_CMD="curl -fsSL $CANONICAL_RAW/install-skills.sh | bash"
+AGENTS_LOCK="$HOME/.heimdall/agents.lock"
+ENV_FILE="$HOME/.heimdall/env"
+if [[ -f "$ENV_FILE" ]]; then
+  # shellcheck disable=SC1090
+  source "$ENV_FILE"
+fi
+if [[ -n "${HEIMDALL_API_BASE:-}" ]]; then
+  UPDATE_CMD="curl -fsSL $CANONICAL_RAW/setup-heimdall.sh | bash -s -- \"$HEIMDALL_API_BASE\""
+else
+  UPDATE_CMD="curl -fsSL $CANONICAL_RAW/setup-heimdall.sh | bash -s -- <API_BASE>"
+fi
 
 lock_value() {
   sed -n "s/^$1=//p" "$LOCK_FILE" | tail -n 1
@@ -19,7 +27,7 @@ echo "==> Heimdall 技能版本自检"
 
 if [[ ! -f "$LOCK_FILE" ]]; then
   echo "  未找到安装记录：$LOCK_FILE"
-  echo "  技能还没用 install-skills.sh 装过，先跑一键初始化："
+  echo "  还没装过，先跑网页「智能体」上那一条："
   echo "    curl -fsSL $CANONICAL_RAW/setup-heimdall.sh | bash -s -- <API_BASE>"
   exit 2
 fi
@@ -65,11 +73,22 @@ for skill in "${SKILLS[@]}"; do
   done
 done
 
+if [[ -f "$AGENTS_LOCK" ]]; then
+  echo ""
+  echo "智能体投影记录：$AGENTS_LOCK"
+  sed -n 's/^count=/  上次同步条数：/p' "$AGENTS_LOCK"
+  echo "  人设有更新时再跑：$UPDATE_CMD"
+else
+  echo ""
+  echo "  尚未同步智能体。有 ~/.heimdall/env 时跑："
+  echo "    $UPDATE_CMD"
+fi
+
 echo ""
 if [[ $stale -eq 1 ]]; then
-  echo "❌ 有技能过期或未安装。跑一条命令同步（不需要重输 Token）："
+  echo "❌ 有技能过期或未安装。再跑同一条安装命令（已有 env 不必重输 Token）："
   echo "   $UPDATE_CMD"
   exit 1
 fi
 
-echo "✅ 全部技能与真源一致"
+echo "✅ 管道技能与真源一致"

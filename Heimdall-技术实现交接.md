@@ -172,7 +172,7 @@ sequenceDiagram
 
 ```
 src/main.tsx       路由
-src/App.tsx        顶栏：项目 / 智能体 / 技能引导
+src/App.tsx        顶栏：项目 / 智能体
 src/api/           axios
 src/hooks/         TanStack Query，缓存键 xxxKeys
 src/pages/
@@ -180,7 +180,7 @@ src/components/    纯 props
 VERSION            整数 → 顶栏「前端 vN」
 ```
 
-路由：`/login` · `/projects` · `/projects/:id` · `/projects/:id/materials/:materialId` · `/agents` · `/guide`
+路由：`/login` · `/projects` · `/projects/:id` · `/projects/:id/materials/:materialId` · `/agents`（`/guide` 重定向到智能体）
 
 - 生成中：有 `generating` 行则 2s 轮询，不接 WebSocket。
 - 网页提词是**定速滚动**，没有 ASR。
@@ -236,13 +236,13 @@ deploy/nginx/asr-location.conf  →  /etc/nginx/heimdall-includes/asr.conf
 
 ### 4.5 heimdall-docs（`docs/`）
 
-公开。网页技能引导和 `setup-heimdall.sh` 依赖本仓 raw 地址。
+公开。网页智能体页的安装命令和 `setup-heimdall.sh` 依赖本仓 raw 地址。
 
 | 文件 | 用途 |
 |---|---|
 | `prds/Heimdall PRD 1.0.md` | 现行产品说明 |
 | `Heimdall-技术实现交接.md` | 本文 |
-| `skills/claude-code/` | doctor / collect / material / write + 安装（`install-skills.sh`）与过期自检（`check-skills.sh`） |
+| `skills/claude-code/` | sync / platform + 默认智能体模板；`setup-heimdall.sh` / `install-skills.sh` / `install-agents.sh` / `check-skills.sh` |
 | `superpowers/specs/` | 设计规格 |
 | `prds/Heimdall PRD.md` | 旧愿景，勿当实现依据 |
 

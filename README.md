@@ -14,13 +14,12 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 
 ### Harness 技能（供外部 Agent 装载）
 
-技能约束「怎么收、怎么写、怎么入库」，**不假定获取手段**（搜索/抓取/字幕/PDF 由执行模型自选）：
+技能只做管道；收集 / 写稿策略在平台智能体「收集员」「写稿」，由 `setup-heimdall.sh` 投影到 Cursor / Claude Code / Codex：
 
-- [`skills/heimdall-material-skill.md`](./skills/heimdall-material-skill.md) — 素材接入与入库质量规则（API Token + 素材/Agent 接口）
-- [`skills/heimdall-collect-skill.md`](./skills/heimdall-collect-skill.md) — 收集任务编排（调研简报 → 分轮执行 → 缺口盘点，可续跑）
-- [`skills/heimdall-write-skill.md`](./skills/heimdall-write-skill.md) — 写作（读该期素材 → 大纲 / 口播稿 / 标题文案 → 成稿回写为素材）
-- [`skills/heimdall-doctor-skill.md`](./skills/heimdall-doctor-skill.md) — 平台自检（技能版本 / 连通 / Token / 素材 API 冒烟）
-- [`skills/claude-code/`](./skills/claude-code/) — **Harness 技能包**（支持 Claude Code、Cursor、OpenClaw、Hermes；`setup-heimdall.sh` 一键初始化：装技能 + 配 Token；`install-skills.sh` 覆盖更新；`check-skills.sh` 查是否过期）
+- [`skills/claude-code/heimdall-sync/`](./skills/claude-code/heimdall-sync/SKILL.md) — 把平台智能体安装/更新到本机
+- [`skills/claude-code/heimdall-platform/`](./skills/claude-code/heimdall-platform/SKILL.md) — Token、项目、素材 API 与入库规则
+- [`skills/claude-code/`](./skills/claude-code/) — 安装脚本（`setup-heimdall.sh` / `install-skills.sh` / `install-agents.sh` / `check-skills.sh`）与默认智能体模板
+- [`skills/legacy/`](./skills/legacy/) — 已停发的 collect / write / material / doctor
 - [`skills/examples/research-plan-example.md`](./skills/examples/research-plan-example.md) — 调研计划模板范本
 
 ### 设计规格

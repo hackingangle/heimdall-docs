@@ -1,3 +1,5 @@
+> **已废弃（2026-08-29）**：写稿策略在平台智能体「写稿」。现行技能是 heimdall-sync 与 heimdall-platform。下文仅作历史。
+
 # Heimdall 写作技能（heimdall-write-skill）
 
 > 供 Claude Code / Cursor / OpenClaw / Hermes 等外部 Harness 作为技能装载。把一期项目已收集的素材写成大纲、口播稿、标题文案，**成稿作为新素材入库**。
