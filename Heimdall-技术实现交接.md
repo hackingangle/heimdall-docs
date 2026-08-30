@@ -254,9 +254,9 @@ deploy/nginx/asr-location.conf  →  /etc/nginx/heimdall-includes/asr.conf
 
 | 文件 | 用途 |
 |---|---|
-| `setup-heimdall.sh` 等 | 安装 / 扇出 / 投影 / 自检 |
+| `setup-heimdall.sh` | 唯一安装入口：写 Token、装管道技能、投影智能体 |
+| `check-skills.sh` | 与 main raw 比对管道技能是否过期 |
 | `heimdall-sync/` `heimdall-platform/` | 管道技能正文 |
-| `agent-templates/` | 默认智能体模板对照副本 |
 
 ---
 

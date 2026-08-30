@@ -375,10 +375,10 @@
       </div>
       <div class="card">
         <h3>技能引导</h3>
-        <p>路由 <code>/guide</code></p>
+        <p>路由 <code>/agents</code>（<code>/guide</code> 重定向到此）</p>
         <ul>
-          <li>教用户在 Claude Code / Cursor / OpenClaw / Hermes 装技能</li>
-          <li>一键脚本：公开仓 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 的 <code>setup-heimdall.sh</code>（初始化）、<code>install-skills.sh</code>（更新）、<code>check-skills.sh</code>（过期自检）</li>
+          <li>教用户在 Claude Code / Cursor / Codex / OpenClaw / Hermes 装技能</li>
+          <li>一键脚本：公开仓 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 的 <code>setup-heimdall.sh</code>（唯一入口，首次和更新同一条）；<code>check-skills.sh</code> 过期自检</li>
           <li>管道技能：<code>heimdall-sync</code>（同步智能体）/ <code>heimdall-platform</code>（素材 API 契约）。收集与写稿策略在平台智能体。</li>
         </ul>
       </div>
@@ -412,35 +412,35 @@
       </div>
     </div>
 
-    <h3>四个 Harness 技能（策略层，不在后端里）</h3>
+    <h3>Harness 管道技能与平台智能体</h3>
     <table>
       <thead>
-        <tr><th>技能</th><th>何时用</th><th>做什么</th></tr>
+        <tr><th>名称</th><th>何时用</th><th>做什么</th></tr>
       </thead>
       <tbody>
         <tr>
-          <td><code>heimdall-doctor</code></td>
-          <td>新环境或 API 报错</td>
-          <td>技能版本自检、连通、Token、素材 API 冒烟</td>
+          <td><code>heimdall-sync</code></td>
+          <td>安装、更新、人设过期</td>
+          <td>再跑同一条 <code>setup-heimdall.sh</code>，投影平台智能体到本机</td>
         </tr>
         <tr>
-          <td><code>heimdall-collect</code></td>
+          <td><code>heimdall-platform</code></td>
+          <td>入库、改素材、查项目</td>
+          <td>素材 API 契约；禁止 POST 带 <code>agent_id</code> 让服务端代跑</td>
+        </tr>
+        <tr>
+          <td>收集员</td>
           <td>给一期节目做调研</td>
-          <td>写调研计划 → 分轮收集 → 维护索引，可续跑</td>
+          <td>平台智能体：写调研计划 → 分轮收集 → 维护索引，可续跑</td>
         </tr>
         <tr>
-          <td><code>heimdall-material</code></td>
-          <td>每条素材入库时</td>
-          <td>标题/出处格式、原文保留、来源 URL 与底稿留档</td>
-        </tr>
-        <tr>
-          <td><code>heimdall-write</code></td>
+          <td>写稿</td>
           <td>素材收够后成稿</td>
-          <td>读该期素材写大纲/口播稿/标题，成稿回写为素材</td>
+          <td>平台智能体：读该期素材写大纲/口播稿/标题，成稿回写为素材</td>
         </tr>
       </tbody>
     </table>
-    <p>技能正文只在 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 维护一份，<code>install-skills.sh</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.sh</code> 据此判断是否过期。</p>
+    <p>管道技能正文只在 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 维护一份，由 <code>setup-heimdall.sh</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.agents/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.sh</code> 据此判断是否过期。收集/写稿策略在平台智能体，不在本仓技能正文。</p>
 
     <h2 id="model">4. 数据模型（6 张表，不要再加）</h2>
     <table>

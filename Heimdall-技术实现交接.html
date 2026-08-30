@@ -411,11 +411,9 @@ deploy/nginx/asr-location.conf   → 装到 /etc/nginx/heimdall-includes/asr.con
         <div class="path">本地 skills/ → https://github.com/hackingangle/heimdall-skills</div>
         <p>管道技能真源。网页「智能体」安装命令和 <code>setup-heimdall.sh</code> 依赖本仓公开 raw 地址。</p>
         <ul>
-          <li><code>setup-heimdall.sh</code> — 初始化 / 更新</li>
-          <li><code>install-skills.sh</code> — 扇出 sync / platform</li>
-          <li><code>install-agents.sh</code> — 投影平台智能体</li>
-          <li><code>check-skills.sh</code> — 过期自检</li>
-          <li><code>heimdall-sync/</code>、<code>heimdall-platform/</code>、<code>agent-templates/</code></li>
+          <li><code>setup-heimdall.sh</code> — 唯一安装入口：写 Token、装管道技能、投影智能体</li>
+          <li><code>check-skills.sh</code> — 与 main raw 比对管道技能是否过期</li>
+          <li><code>heimdall-sync/</code>、<code>heimdall-platform/</code> — 管道技能正文</li>
         </ul>
       </section>
     </div>
