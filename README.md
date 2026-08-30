@@ -17,7 +17,7 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 技能真源在独立公开仓 [heimdall-skills](https://github.com/hackingangle/heimdall-skills)（本地 `~/ws/heimdall/skills`）。本仓不托管安装脚本。
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/hackingangle/heimdall-skills/main/setup-heimdall.sh | bash -s -- "<API_BASE>"
+curl -fsSL https://raw.githubusercontent.com/hackingangle/heimdall-skills/main/setup-heimdall.py | python3 - "<API_BASE>"
 ```
 
 ### 设计规格

@@ -222,7 +222,7 @@
           <td><code>heimdall-skills</code></td>
           <td><span class="badge pub">PUBLIC</span></td>
           <td>bash / SKILL.md</td>
-          <td>不部署到 ECS。<code>setup-heimdall.sh</code> 从此仓 raw 拉取</td>
+          <td>不部署到 ECS。<code>setup-heimdall.py</code> 从此仓 raw 拉取</td>
           <td>无 Deploy</td>
         </tr>
       </tbody>
@@ -275,7 +275,7 @@ git clone https://github.com/hackingangle/heimdall-skills.git   skills</code></p
        └─ Bearer hd_xxx → 同一套 /api（projects / materials / agents）
 
   技能正文 / 安装脚本
-       └─ 公开仓 heimdall-skills（setup-heimdall.sh 从 raw.githubusercontent.com 拉）
+       └─ 公开仓 heimdall-skills（setup-heimdall.py 从 raw.githubusercontent.com 拉）
 
 数据：MySQL（RDS）只被 backend 访问
 文件：素材原件 HEIMDALL_STORAGE_BACKEND=oss | local，只被 backend 访问
@@ -409,10 +409,10 @@ deploy/nginx/asr-location.conf   → 装到 /etc/nginx/heimdall-includes/asr.con
       <section class="repo" id="skills">
         <h3>F. heimdall-skills <span class="badge pub">PUBLIC</span></h3>
         <div class="path">本地 skills/ → https://github.com/hackingangle/heimdall-skills</div>
-        <p>管道技能真源。网页「智能体」安装命令和 <code>setup-heimdall.sh</code> 依赖本仓公开 raw 地址。</p>
+        <p>管道技能真源。网页「智能体」安装命令和 <code>setup-heimdall.py</code> 依赖本仓公开 raw 地址。</p>
         <ul>
-          <li><code>setup-heimdall.sh</code> — 唯一安装入口：写 Token、装管道技能、投影智能体</li>
-          <li><code>check-skills.sh</code> — 与 main raw 比对管道技能是否过期</li>
+          <li><code>setup-heimdall.py</code> — 唯一安装入口：写 Token、装管道技能、投影智能体</li>
+          <li><code>check-skills.py</code> — 与 main raw 比对管道技能是否过期</li>
           <li><code>heimdall-sync/</code>、<code>heimdall-platform/</code> — 管道技能正文</li>
         </ul>
       </section>

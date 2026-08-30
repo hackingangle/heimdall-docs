@@ -31,7 +31,7 @@ flowchart TB
 | `heimdall/` | [heimdall-client](https://github.com/hackingangle/heimdall-client) | 私有 | SwiftUI · `heimdall.xcodeproj` | 不走 ECS；TestFlight / 真机 | 无 Deploy |
 | `asr/` | [heimdall-asr](https://github.com/hackingangle/heimdall-asr) | 私有 | Python · WebSocket · 阿里云 ISI/NLS | `:9001` + Nginx `/asr/` | 有 |
 | `docs/` | [heimdall-docs](https://github.com/hackingangle/heimdall-docs) | 公开 | Markdown / HTML | 不部署 ECS；仅文档 | 无 Deploy |
-| `skills/` | [heimdall-skills](https://github.com/hackingangle/heimdall-skills) | 公开 | bash / SKILL.md | 不部署 ECS；`setup-heimdall.sh` 从此仓 raw 拉 | 无 Deploy |
+| `skills/` | [heimdall-skills](https://github.com/hackingangle/heimdall-skills) | 公开 | Python / SKILL.md | 不部署 ECS；`setup-heimdall.py` 从此仓 raw 拉 | 无 Deploy |
 
 **不是仓，不要当发布入口：**
 
@@ -250,12 +250,12 @@ deploy/nginx/asr-location.conf  →  /etc/nginx/heimdall-includes/asr.conf
 
 ### 4.6 heimdall-skills（`skills/`）
 
-公开。网页智能体页的安装命令和 `setup-heimdall.sh` 依赖本仓 raw 地址。
+公开。网页智能体页的安装命令和 `setup-heimdall.py` 依赖本仓 raw 地址。
 
 | 文件 | 用途 |
 |---|---|
-| `setup-heimdall.sh` | 唯一安装入口：写 Token、装管道技能、投影智能体 |
-| `check-skills.sh` | 与 main raw 比对管道技能是否过期 |
+| `setup-heimdall.py` | 唯一安装入口：写 Token、装管道技能、投影智能体 |
+| `check-skills.py` | 与 main raw 比对管道技能是否过期 |
 | `heimdall-sync/` `heimdall-platform/` | 管道技能正文 |
 
 ---

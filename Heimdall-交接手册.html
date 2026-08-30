@@ -262,7 +262,7 @@
         <tr>
           <td><code>skills/</code></td>
           <td><a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a></td>
-          <td>Harness 管道技能与 <code>setup-heimdall.sh</code>。技能正文以本仓为准。</td>
+          <td>Harness 管道技能与 <code>setup-heimdall.py</code>。技能正文以本仓为准。</td>
           <td><span class="badge pub">PUBLIC</span></td>
           <td>main</td>
         </tr>
@@ -378,7 +378,7 @@
         <p>路由 <code>/agents</code>（<code>/guide</code> 重定向到此）</p>
         <ul>
           <li>教用户在 Claude Code / Cursor / Codex / OpenClaw / Hermes 装技能</li>
-          <li>一键脚本：公开仓 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 的 <code>setup-heimdall.sh</code>（唯一入口，首次和更新同一条）；<code>check-skills.sh</code> 过期自检</li>
+          <li>一键脚本：公开仓 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 的 <code>setup-heimdall.py</code>（唯一入口，首次和更新同一条）；<code>check-skills.py</code> 过期自检</li>
           <li>管道技能：<code>heimdall-sync</code>（同步智能体）/ <code>heimdall-platform</code>（素材 API 契约）。收集与写稿策略在平台智能体。</li>
         </ul>
       </div>
@@ -421,7 +421,7 @@
         <tr>
           <td><code>heimdall-sync</code></td>
           <td>安装、更新、人设过期</td>
-          <td>再跑同一条 <code>setup-heimdall.sh</code>，投影平台智能体到本机</td>
+          <td>再跑同一条 <code>setup-heimdall.py</code>，投影平台智能体到本机</td>
         </tr>
         <tr>
           <td><code>heimdall-platform</code></td>
@@ -440,7 +440,7 @@
         </tr>
       </tbody>
     </table>
-    <p>管道技能正文只在 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 维护一份，由 <code>setup-heimdall.sh</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.agents/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.sh</code> 据此判断是否过期。收集/写稿策略在平台智能体，不在本仓技能正文。</p>
+    <p>管道技能正文只在 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 维护一份，由 <code>setup-heimdall.py</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.agents/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.py</code> 据此判断是否过期。收集/写稿策略在平台智能体，不在本仓技能正文。</p>
 
     <h2 id="model">4. 数据模型（6 张表，不要再加）</h2>
     <table>
@@ -647,7 +647,7 @@ python server.py             # ws://0.0.0.0:9001
       <li>要到 4 个私有仓的 GitHub 权限，以及生产 Secrets 的查阅/轮换权限（不要用个人电脑直接 SSH 生产）。</li>
       <li>本地按第 6 节把 backend + frontend 跑通，用网页走完：注册 → 建项目 → 录入素材 → 配 Agent → 创作一条 → 打开提词器。</li>
       <li>读 <code>docs/prds/Heimdall PRD.md</code> 和 <code>docs/superpowers/specs/2026-07-04-creation-workflow-design.md</code>。</li>
-      <li>在网页「智能体」签发 Token，对外部 Agent 跑一遍 <code>setup-heimdall.sh</code>。</li>
+      <li>在网页「智能体」签发 Token，对外部 Agent 跑一遍 <code>setup-heimdall.py</code>。</li>
       <li>iOS 真机连生产 ASR，走一次跟读，打开诊断确认有真实识别文本。</li>
       <li>看清第 9 节未合并分支，决定合入还是废弃，避免两套 PDF/提词器方案并行。</li>
     </ol>
