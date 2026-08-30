@@ -14,13 +14,11 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 
 ### Harness 技能（供外部 Agent 装载）
 
-技能只做管道；收集 / 写稿策略在平台智能体「收集员」「写稿」，由 `setup-heimdall.sh` 投影到 Cursor / Claude Code / Codex：
+技能真源在独立公开仓 [heimdall-skills](https://github.com/hackingangle/heimdall-skills)（本地 `~/ws/heimdall/skills`）。本仓不托管安装脚本。
 
-- [`skills/claude-code/heimdall-sync/`](./skills/claude-code/heimdall-sync/SKILL.md) — 把平台智能体安装/更新到本机
-- [`skills/claude-code/heimdall-platform/`](./skills/claude-code/heimdall-platform/SKILL.md) — Token、项目、素材 API 与入库规则
-- [`skills/claude-code/`](./skills/claude-code/) — 安装脚本（`setup-heimdall.sh` / `install-skills.sh` / `install-agents.sh` / `check-skills.sh`）与默认智能体模板
-- [`skills/legacy/`](./skills/legacy/) — 已停发的 collect / write / material / doctor
-- [`skills/examples/research-plan-example.md`](./skills/examples/research-plan-example.md) — 调研计划模板范本
+```bash
+curl -fsSL https://raw.githubusercontent.com/hackingangle/heimdall-skills/main/setup-heimdall.sh | bash -s -- "<API_BASE>"
+```
 
 ### 设计规格
 
@@ -29,3 +27,4 @@ Heimdall 项目的产品与设计文档。代码在独立仓库维护。
 - [`superpowers/specs/2026-07-06-collect-task-design.md`](./superpowers/specs/2026-07-06-collect-task-design.md) — 素材收集任务设计（heimdall-collect 技能）
 - [`superpowers/specs/2026-07-26-multimodal-material-ingestion-design.md`](./superpowers/specs/2026-07-26-multimodal-material-ingestion-design.md) — 多模态素材理解与 PDF 自动解析演进设计
 - [`superpowers/specs/2026-07-05-material-research-design.md`](./superpowers/specs/2026-07-05-material-research-design.md) — 调研素材收集设计（已废弃，历史记录）
+- [`superpowers/specs/2026-08-30-heimdall-skills-repo-design.md`](./superpowers/specs/2026-08-30-heimdall-skills-repo-design.md) — 管道技能拆到 heimdall-skills

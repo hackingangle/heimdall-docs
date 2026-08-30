@@ -189,10 +189,10 @@
       <h1>Heimdall 项目交接手册</h1>
       <p class="lead">
         给接手维护的人：这不是脚手架说明，而是当前真实落地的产品、仓库、板块和发布纪律。
-        工作区 <code>/Users/ong/ws/heimdall</code> 本身<b>不是</b>一个 git 仓库，里面装的是 5 个相互独立的 GitHub 仓库。
+        工作区 <code>/Users/ong/ws/heimdall</code> 本身<b>不是</b>一个 git 仓库，里面装的是 6 个相互独立的 GitHub 仓库。
       </p>
       <div class="meta">
-        <div class="stat"><b>5</b><span>独立 Git 仓库</span></div>
+        <div class="stat"><b>6</b><span>独立 Git 仓库</span></div>
         <div class="stat"><b>6</b><span>核心数据实体</span></div>
         <div class="stat"><b>agoodbit.com</b><span>生产站点</span></div>
         <div class="stat"><b>前端 v8 · 后端 v3</b><span>本地 VERSION（以各仓文件为准）</span></div>
@@ -212,7 +212,7 @@
     </header>
 
     <h2 id="repos">1. 仓库清单（必须全部拿到）</h2>
-    <p>GitHub 组织：<code>hackingangle</code>。除文档仓公开外，其余均为 <span class="badge priv">PRIVATE</span>，接手人需要被加为 collaborator。</p>
+    <p>GitHub 组织：<code>hackingangle</code>。文档仓与技能仓公开，其余均为 <span class="badge priv">PRIVATE</span>，接手人需要被加为 collaborator。</p>
     <table>
       <thead>
         <tr>
@@ -255,7 +255,14 @@
         <tr>
           <td><code>docs/</code></td>
           <td><a href="https://github.com/hackingangle/heimdall-docs">heimdall-docs</a></td>
-          <td>PRD、设计规格、Harness 技能包（<code>setup-heimdall.sh</code>）。技能正文以本仓为准。</td>
+          <td>PRD、设计规格、交接文档。不含安装脚本。</td>
+          <td><span class="badge pub">PUBLIC</span></td>
+          <td>main</td>
+        </tr>
+        <tr>
+          <td><code>skills/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a></td>
+          <td>Harness 管道技能与 <code>setup-heimdall.sh</code>。技能正文以本仓为准。</td>
           <td><span class="badge pub">PUBLIC</span></td>
           <td>main</td>
         </tr>
@@ -280,7 +287,7 @@
     </table>
 
     <div class="callout">
-      克隆时请分别 clone 这 5 个仓库，保持与现有工作区相同的目录名（<code>server</code> / <code>web</code> / <code>heimdall</code> / <code>asr</code> / <code>docs</code>），这样各仓 <code>CLAUDE.md</code> 里的相对路径才成立。
+      克隆时请分别 clone 这 6 个仓库，保持与现有工作区相同的目录名（<code>server</code> / <code>web</code> / <code>heimdall</code> / <code>asr</code> / <code>docs</code> / <code>skills</code>），这样各仓 <code>CLAUDE.md</code> 里的相对路径才成立。
     </div>
 
     <h2 id="product">2. 产品定位（接手前先读懂这一段）</h2>
@@ -371,8 +378,8 @@
         <p>路由 <code>/guide</code></p>
         <ul>
           <li>教用户在 Claude Code / Cursor / OpenClaw / Hermes 装技能</li>
-          <li>一键脚本：<code>docs/skills/claude-code/setup-heimdall.sh</code>（初始化）、<code>install-skills.sh</code>（更新）、<code>check-skills.sh</code>（过期自检）</li>
-          <li>四件套：doctor（自检）/ collect（调研编排）/ material（入库规范）/ write（写作成稿）</li>
+          <li>一键脚本：公开仓 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 的 <code>setup-heimdall.sh</code>（初始化）、<code>install-skills.sh</code>（更新）、<code>check-skills.sh</code>（过期自检）</li>
+          <li>管道技能：<code>heimdall-sync</code>（同步智能体）/ <code>heimdall-platform</code>（素材 API 契约）。收集与写稿策略在平台智能体。</li>
         </ul>
       </div>
       <div class="card">
@@ -433,7 +440,7 @@
         </tr>
       </tbody>
     </table>
-    <p>技能正文只在 <code>docs/skills/claude-code/</code> 维护一份，<code>install-skills.sh</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.sh</code> 据此判断是否过期。</p>
+    <p>技能正文只在 <a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a> 维护一份，<code>install-skills.sh</code> 扇出到本机各 Harness（<code>~/.claude/skills</code>、<code>~/.cursor/skills</code>、<code>~/.openclaw/skills</code>、<code>~/.hermes/skills/heimdall</code>），并把哈希记进 <code>~/.heimdall/skills.lock</code>；<code>check-skills.sh</code> 据此判断是否过期。</p>
 
     <h2 id="model">4. 数据模型（6 张表，不要再加）</h2>
     <table>
@@ -640,7 +647,7 @@ python server.py             # ws://0.0.0.0:9001
       <li>要到 4 个私有仓的 GitHub 权限，以及生产 Secrets 的查阅/轮换权限（不要用个人电脑直接 SSH 生产）。</li>
       <li>本地按第 6 节把 backend + frontend 跑通，用网页走完：注册 → 建项目 → 录入素材 → 配 Agent → 创作一条 → 打开提词器。</li>
       <li>读 <code>docs/prds/Heimdall PRD.md</code> 和 <code>docs/superpowers/specs/2026-07-04-creation-workflow-design.md</code>。</li>
-      <li>在网页「技能引导」签发 Token，对外部 Agent 跑一遍 <code>heimdall-doctor</code>。</li>
+      <li>在网页「智能体」签发 Token，对外部 Agent 跑一遍 <code>setup-heimdall.sh</code>。</li>
       <li>iOS 真机连生产 ASR，走一次跟读，打开诊断确认有真实识别文本。</li>
       <li>看清第 9 节未合并分支，决定合入还是废弃，避免两套 PDF/提词器方案并行。</li>
     </ol>
@@ -658,7 +665,7 @@ python server.py             # ws://0.0.0.0:9001
         <tr><td>跟读对齐</td><td><code>heimdall/heimdall/Features/Teleprompter/</code></td></tr>
         <tr><td>ASR 协议</td><td><code>asr/README.md</code></td></tr>
         <tr><td>发布</td><td>各仓 <code>deploy/README.md</code> + <code>.github/workflows/deploy.yml</code></td></tr>
-        <tr><td>技能</td><td><code>docs/skills/</code></td></tr>
+        <tr><td>技能</td><td><code>skills/</code>（<a href="https://github.com/hackingangle/heimdall-skills">heimdall-skills</a>）</td></tr>
       </tbody>
     </table>
 

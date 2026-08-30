@@ -155,7 +155,7 @@
     <h2 id="map">1. 仓库总表（先看这一张）</h2>
     <p>
       GitHub 组织 <code>hackingangle</code>。本地工作区 <code>~/ws/heimdall</code>
-      <b>不是 git 仓库</b>，只是把下面 5 个独立仓放在一起。
+      <b>不是 git 仓库</b>，只是把下面 6 个独立仓放在一起。
       <b>改代码、提交、发版都按仓走，禁止做成单体仓。</b>
     </p>
     <table>
@@ -212,8 +212,17 @@
           <td><a href="https://github.com/hackingangle/heimdall-docs">链接</a></td>
           <td><code>heimdall-docs</code></td>
           <td><span class="badge pub">PUBLIC</span></td>
-          <td>Markdown / HTML / 技能脚本</td>
-          <td>不部署到 ECS。技能安装脚本从此仓 raw 拉取</td>
+          <td>Markdown / HTML</td>
+          <td>不部署到 ECS。仅文档</td>
+          <td>无 Deploy</td>
+        </tr>
+        <tr>
+          <td><code>skills/</code></td>
+          <td><a href="https://github.com/hackingangle/heimdall-skills">链接</a></td>
+          <td><code>heimdall-skills</code></td>
+          <td><span class="badge pub">PUBLIC</span></td>
+          <td>bash / SKILL.md</td>
+          <td>不部署到 ECS。<code>setup-heimdall.sh</code> 从此仓 raw 拉取</td>
           <td>无 Deploy</td>
         </tr>
       </tbody>
@@ -240,14 +249,15 @@ git clone https://github.com/hackingangle/heimdall-backend.git  server
 git clone https://github.com/hackingangle/heimdall-frontend.git web
 git clone https://github.com/hackingangle/heimdall-client.git   heimdall
 git clone https://github.com/hackingangle/heimdall-asr.git      asr
-git clone https://github.com/hackingangle/heimdall-docs.git     docs</code></pre>
+git clone https://github.com/hackingangle/heimdall-docs.git     docs
+git clone https://github.com/hackingangle/heimdall-skills.git   skills</code></pre>
     <div class="note">
-      目录名必须是 <code>server</code> / <code>web</code> / <code>heimdall</code> / <code>asr</code> / <code>docs</code>。
+      目录名必须是 <code>server</code> / <code>web</code> / <code>heimdall</code> / <code>asr</code> / <code>docs</code> / <code>skills</code>。
       各仓 <code>CLAUDE.md</code> 和相对路径按这个约定写。四个私有仓需要 collaborator。
     </div>
     <p>默认分支都是 <code>main</code>。功能改动各自开分支、各自 PR、各自 push。前后端各改各的 VERSION（见第 7 节）。</p>
 
-    <h2 id="runtime">3. 五仓在运行时怎么接上</h2>
+    <h2 id="runtime">3. 各仓在运行时怎么接上</h2>
     <div class="arch">生产（同一台 ECS，域名 www.agoodbit.com）
 
   浏览器 ──HTTPS──► Nginx（配置在 heimdall-backend）
@@ -265,7 +275,7 @@ git clone https://github.com/hackingangle/heimdall-docs.git     docs</code></pre
        └─ Bearer hd_xxx → 同一套 /api（projects / materials / agents）
 
   技能正文 / 安装脚本
-       └─ 公开仓 heimdall-docs（setup-heimdall.sh 从 raw.githubusercontent.com 拉）
+       └─ 公开仓 heimdall-skills（setup-heimdall.sh 从 raw.githubusercontent.com 拉）
 
 数据：MySQL（RDS）只被 backend 访问
 文件：素材原件 HEIMDALL_STORAGE_BACKEND=oss | local，只被 backend 访问
@@ -388,13 +398,24 @@ deploy/nginx/asr-location.conf   → 装到 /etc/nginx/heimdall-includes/asr.con
       <section class="repo" id="docs">
         <h3>E. heimdall-docs <span class="badge pub">PUBLIC</span></h3>
         <div class="path">本地 docs/ → https://github.com/hackingangle/heimdall-docs</div>
-        <p>产品/设计/技能。网页「技能引导」和 <code>setup-heimdall.sh</code> 依赖本仓公开地址。</p>
+        <p>产品 / 设计 / 交接。不含安装脚本。</p>
         <ul>
           <li><code>prds/Heimdall PRD 1.0.md</code> + <code>Heimdall-PRD-1.0.html</code> — 现行产品说明</li>
           <li><code>prds/Heimdall PRD.md</code> — 旧愿景（任务表），勿当实现依据</li>
-          <li><code>skills/claude-code/</code> — doctor / collect / material / write + <code>setup-heimdall.sh</code>（初始化）、<code>install-skills.sh</code>（扇出安装/更新）、<code>check-skills.sh</code>（过期自检）</li>
-          <li><code>superpowers/specs/</code> — 创作、LLM、收集、多模态等设计</li>
+          <li><code>superpowers/specs/</code> — 创作、LLM、收集、多模态、技能拆仓等设计</li>
           <li>本文 <code>Heimdall-技术实现交接.html</code></li>
+        </ul>
+      </section>
+      <section class="repo" id="skills">
+        <h3>F. heimdall-skills <span class="badge pub">PUBLIC</span></h3>
+        <div class="path">本地 skills/ → https://github.com/hackingangle/heimdall-skills</div>
+        <p>管道技能真源。网页「智能体」安装命令和 <code>setup-heimdall.sh</code> 依赖本仓公开 raw 地址。</p>
+        <ul>
+          <li><code>setup-heimdall.sh</code> — 初始化 / 更新</li>
+          <li><code>install-skills.sh</code> — 扇出 sync / platform</li>
+          <li><code>install-agents.sh</code> — 投影平台智能体</li>
+          <li><code>check-skills.sh</code> — 过期自检</li>
+          <li><code>heimdall-sync/</code>、<code>heimdall-platform/</code>、<code>agent-templates/</code></li>
         </ul>
       </section>
     </div>
@@ -434,10 +455,16 @@ deploy/nginx/asr-location.conf   → 装到 /etc/nginx/heimdall-includes/asr.con
           <td>TestFlight / 真机</td>
         </tr>
         <tr>
-          <td>技能 / PRD</td>
+          <td>PRD / 交接</td>
           <td>heimdall-docs</td>
           <td>push 即公开，无 Deploy</td>
-          <td>raw 脚本与文档更新</td>
+          <td>文档更新</td>
+        </tr>
+        <tr>
+          <td>技能安装脚本</td>
+          <td>heimdall-skills</td>
+          <td>push 即公开，无 Deploy</td>
+          <td>raw 脚本更新</td>
         </tr>
       </tbody>
     </table>
@@ -501,7 +528,7 @@ python server.py                                               # :9001
     </table>
 
     <footer>
-      2026-08-19 · 依据工作区五仓 remote 与代码整理。密钥不写在本文。
+      2026-08-30 · 依据工作区六仓 remote 与代码整理。密钥不写在本文。
     </footer>
   </div>
 </body>

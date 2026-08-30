@@ -5,7 +5,7 @@
 - 产品能力见 [`prds/Heimdall PRD 1.0.md`](./prds/Heimdall%20PRD%201.0.md)
 - HTML 版见 [`Heimdall-技术实现交接.html`](./Heimdall-技术实现交接.html)
 
-工作区 `~/ws/heimdall` **不是 git 仓库**。里面是 5 个独立 GitHub 仓。改代码、提交、发版都按仓走。
+工作区 `~/ws/heimdall` **不是 git 仓库**。里面是 6 个独立 GitHub 仓。改代码、提交、发版都按仓走。
 
 ---
 
@@ -21,6 +21,7 @@ flowchart TB
   WS --> IOS["heimdall/<br/>heimdall-client<br/>PRIVATE"]
   WS --> ASR["asr/<br/>heimdall-asr<br/>PRIVATE"]
   WS --> DOC["docs/<br/>heimdall-docs<br/>PUBLIC"]
+  WS --> SK["skills/<br/>heimdall-skills<br/>PUBLIC"]
 ```
 
 | 本地目录 | GitHub | 可见 | 技术栈 | 生产职责 | CI / Deploy |
@@ -29,7 +30,8 @@ flowchart TB
 | `web/` | [heimdall-frontend](https://github.com/hackingangle/heimdall-frontend) | 私有 | React 19 · TS · Vite · Ant Design · TanStack Query | 静态文件 → `/var/www/heimdall/web/` | 有 |
 | `heimdall/` | [heimdall-client](https://github.com/hackingangle/heimdall-client) | 私有 | SwiftUI · `heimdall.xcodeproj` | 不走 ECS；TestFlight / 真机 | 无 Deploy |
 | `asr/` | [heimdall-asr](https://github.com/hackingangle/heimdall-asr) | 私有 | Python · WebSocket · 阿里云 ISI/NLS | `:9001` + Nginx `/asr/` | 有 |
-| `docs/` | [heimdall-docs](https://github.com/hackingangle/heimdall-docs) | 公开 | Markdown / 技能脚本 | 不部署 ECS；`setup-heimdall.sh` 从此仓 raw 拉 | 无 Deploy |
+| `docs/` | [heimdall-docs](https://github.com/hackingangle/heimdall-docs) | 公开 | Markdown / HTML | 不部署 ECS；仅文档 | 无 Deploy |
+| `skills/` | [heimdall-skills](https://github.com/hackingangle/heimdall-skills) | 公开 | bash / SKILL.md | 不部署 ECS；`setup-heimdall.sh` 从此仓 raw 拉 | 无 Deploy |
 
 **不是仓，不要当发布入口：**
 
@@ -52,6 +54,7 @@ git clone https://github.com/hackingangle/heimdall-frontend.git web
 git clone https://github.com/hackingangle/heimdall-client.git   heimdall
 git clone https://github.com/hackingangle/heimdall-asr.git      asr
 git clone https://github.com/hackingangle/heimdall-docs.git     docs
+git clone https://github.com/hackingangle/heimdall-skills.git   skills
 ```
 
 功能改动：各自开分支、各自 PR、各自 push。前后端各改各的 `VERSION`。
@@ -236,15 +239,24 @@ deploy/nginx/asr-location.conf  →  /etc/nginx/heimdall-includes/asr.conf
 
 ### 4.5 heimdall-docs（`docs/`）
 
-公开。网页智能体页的安装命令和 `setup-heimdall.sh` 依赖本仓 raw 地址。
+公开。只放 PRD、交接与设计规格，**不是**安装脚本真源。
 
 | 文件 | 用途 |
 |---|---|
 | `prds/Heimdall PRD 1.0.md` | 现行产品说明 |
 | `Heimdall-技术实现交接.md` | 本文 |
-| `skills/claude-code/` | sync / platform + 默认智能体模板；`setup-heimdall.sh` / `install-skills.sh` / `install-agents.sh` / `check-skills.sh` |
 | `superpowers/specs/` | 设计规格 |
 | `prds/Heimdall PRD.md` | 旧愿景，勿当实现依据 |
+
+### 4.6 heimdall-skills（`skills/`）
+
+公开。网页智能体页的安装命令和 `setup-heimdall.sh` 依赖本仓 raw 地址。
+
+| 文件 | 用途 |
+|---|---|
+| `setup-heimdall.sh` 等 | 安装 / 扇出 / 投影 / 自检 |
+| `heimdall-sync/` `heimdall-platform/` | 管道技能正文 |
+| `agent-templates/` | 默认智能体模板对照副本 |
 
 ---
 
@@ -285,7 +297,8 @@ flowchart LR
 | 网页 UI | heimdall-frontend | 刷新站点 |
 | 跟读转写 | heimdall-asr | `curl -sf https://www.agoodbit.com/asr/health` |
 | iOS | heimdall-client | Xcode 归档，不走 ECS |
-| 技能 / PRD | heimdall-docs | push 即公开，无 Deploy |
+| PRD / 交接 | heimdall-docs | push 即公开，无 Deploy |
+| 技能安装脚本 | heimdall-skills | push 即公开，无 Deploy |
 
 首次上机顺序：**backend → frontend → asr**。
 
